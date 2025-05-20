@@ -6,6 +6,7 @@ import { createClient } from "./server"
 export async function signInWithGithub() {
     console.log("Sign in with github")
     const supabase = await createClient();
+    console.log("Redirecting URL", process.env.NEXT_PUBLIC_SITE_URL)
     const { data, error } = await supabase.auth.signInWithOAuth({
         provider: "github",
         options: {
