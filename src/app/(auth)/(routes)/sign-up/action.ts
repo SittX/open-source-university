@@ -10,6 +10,11 @@ export async function signup(previousState: AuthError | undefined, formData: For
     const data = {
         email: formData.get('email'),
         password: formData.get('password'),
+        options: {
+            data: {
+                role: "teacher"
+            }
+        }
     }
 
     try {
