@@ -19,15 +19,15 @@ const AppSidebarItem = ({ url, title, icon: Icon }: SidebarItem) => {
       <Link
         href={url}
         className={cn(
-          "hover:text-black hover:bg-slate-300 hover:transition-all",
-          isActive && "text-black bg-slate-200"
+          "hover:text-black hover:bg-gray-300 hover:transition-all",
+          isActive && "text-black bg-gray-300"
         )}
       >
         <Icon />
         <span>{title}</span>
         <div
           className={cn(
-            "ml-auto opacity-0 border-r-3 border-sky-600 h-full transition-all",
+            "ml-auto opacity-0 border-r-3 border-gray-500 h-full transition-all",
             isActive && "opacity-100"
           )}
         />
