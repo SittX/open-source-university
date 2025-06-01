@@ -5,9 +5,10 @@ import { SidebarHeader } from "@/components/ui/sidebar";
 
 const AppSideBarHeader = () => {
   return (
-    <SidebarHeader>
-      <Link href="/" className="flex gap-2 items-center">
-        <Image src={"/logo.svg"} alt="logo" width={125} height={125} />
+    <SidebarHeader className="mr-auto p-3">
+      <Link href="/" className="flex gap-3 justify-around">
+        <span className="text-lg font-bold">Open Source University</span>
+        <Image src={"/logo.svg"} alt="logo" width={50} height={50} />
       </Link>
     </SidebarHeader>
   );

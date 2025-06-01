@@ -1,0 +1,21 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Course {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  imageUrl    String?
+  price       Float?
+  isPublished Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  createdBy   String
+  updatedAt   DateTime @updatedAt
+}
