@@ -8,7 +8,7 @@ type TitleFormProps = {
 };
 
 const CourseTitleForm = ({ initialData }: TitleFormProps) => {
-  return <div>CourseTitleForm</div>;
+  return <div>{initialData.title || "No Title"}</div>;
 };
 
 export default CourseTitleForm;

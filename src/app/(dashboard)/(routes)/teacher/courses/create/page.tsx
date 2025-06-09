@@ -13,12 +13,13 @@ import { Input } from "@/components/ui/input";
 import { courseCreateForm, TCourseCreateForm } from "@/lib/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
-import React, { useActionState, useEffect } from "react";
+import React, { useActionState } from "react";
 import { useForm } from "react-hook-form";
 import { createCourseAction } from "./action";
 
 const CreateCoursePage = () => {
   const [error, action, isLoading] = useActionState(createCourseAction, null);
+  console.log(error);
 
   const form = useForm<TCourseCreateForm>({
     resolver: zodResolver(courseCreateForm),
@@ -49,8 +50,8 @@ const CreateCoursePage = () => {
                   />
                 </FormControl>
                 <FormDescription>
-                  What are you going to teach in the course? Don't worry. You
-                  can change it later.
+                  What are you going to teach in the course? Don&apos;t worry.
+                  You can change it later.
                 </FormDescription>
                 <FormMessage />
               </FormItem>

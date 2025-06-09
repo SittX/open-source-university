@@ -8,8 +8,14 @@ import {
   CourseTitleForm,
 } from "../_components";
 
-const CourseDetailsPage = async ({ params }: { params: { id: string } }) => {
-  const { id } = await Promise.resolve(params);
+type PageProps = {
+  params: Promise<{
+    id: string;
+  }>;
+};
+
+const CourseDetailsPage = async ({ params }: PageProps) => {
+  const { id } = await params;
 
   if (!id) {
     return redirect("/teacher/courses");
