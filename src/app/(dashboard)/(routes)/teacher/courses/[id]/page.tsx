@@ -1,12 +1,7 @@
 import { prisma } from "@/lib/db";
 import React from "react";
 import { redirect } from "next/navigation";
-import {
-  CourseDescriptionForm,
-  CourseImageForm,
-  CoursePriceForm,
-  CourseTitleForm,
-} from "../_components";
+import CourseForm from "../_components/CourseForm";
 
 type PageProps = {
   params: Promise<{
@@ -31,40 +26,32 @@ const CourseDetailsPage = async ({ params }: PageProps) => {
     return redirect("/teacher/courses");
   }
 
+  const categories = await prisma.category.findMany();
+
   const requiredFields = [
     course.title,
     course.description,
-    course.imageUrl,
+    course.categoryId,
     course.price,
   ];
 
   const totalFields = requiredFields.length;
   const completedFields = requiredFields.filter(Boolean).length;
-  const completionIndicationText = `(${totalFields}/${completedFields}) required fields remaining`;
+  const completionIndicationText = `(${completedFields}/${totalFields}) required fields remaining`;
 
   return (
-    <div className="p-6">
+    <div className="p-6 h-full">
       <div className="flex items-center justify-between">
         <div className="flex flex-col gap-y-2">
           <h1 className="text-2xl font-medium">Course Setup</h1>
-          <span>{completionIndicationText}</span>
+          <span className="text-sm text-slate-500 italic">
+            {completedFields === totalFields ? "" : completionIndicationText}
+          </span>
+          <h2 className="font-xl">Edit course details</h2>
         </div>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2">
-        <CourseTitleForm initialData={{ id: course.id, title: course.title }} />
-        <CourseDescriptionForm
-          initialData={{
-            id: course.id,
-            description: course.description,
-          }}
-        />
-        <CourseImageForm
-          initialData={{
-            id: course.id,
-            imageUrl: course.imageUrl,
-          }}
-        />
-        <CoursePriceForm initialData={{ id: course.id, price: course.price }} />
+      <div className="mt-6">
+        <CourseForm data={course} categories={categories} />
       </div>
     </div>
   );

@@ -10,19 +10,19 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { courseCreateForm, TCourseCreateForm } from "@/lib/types";
+import { CourseCreateForm, TCourseCreateForm } from "@/lib/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import React, { useActionState } from "react";
 import { useForm } from "react-hook-form";
-import { createCourseAction } from "./action";
+import { createCourseAction } from "../_actions/action";
 
 const CreateCoursePage = () => {
   const [error, action, isLoading] = useActionState(createCourseAction, null);
   console.log(error);
 
   const form = useForm<TCourseCreateForm>({
-    resolver: zodResolver(courseCreateForm),
+    resolver: zodResolver(CourseCreateForm),
     defaultValues: {
       title: "",
     },

@@ -9,13 +9,31 @@ datasource db {
 }
 
 model Course {
-  id          String   @id @default(cuid())
+  id          String       @id @default(cuid())
   title       String
   description String?
   imageUrl    String?
   price       Float?
-  isPublished Boolean  @default(false)
-  createdAt   DateTime @default(now())
+  isPublished Boolean      @default(false)
+  createdAt   DateTime     @default(now())
   createdBy   String
-  updatedAt   DateTime @updatedAt
+  updatedAt   DateTime     @updatedAt
+  categoryId  String?
+  category    Category?    @relation(fields: [categoryId], references: [id])
+  attachments Attachment[]
+}
+
+model Category {
+  id      String   @id @default(cuid())
+  name    String   @unique
+  courses Course[]
+}
+
+model Attachment {
+  id   String @id @default(cuid())
+  name String
+  url  String
+
+  courseId String
+  course   Course @relation(fields: [courseId], references: [id])
 }
