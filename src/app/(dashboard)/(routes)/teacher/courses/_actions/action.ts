@@ -2,7 +2,7 @@
 import { prisma } from "@/lib/db"
 import { CourseCreateForm, CourseFormSchema } from "@/lib/types"
 import { z } from "zod"
-import { redirect, RedirectType } from "next/navigation"
+import { redirect } from "next/navigation"
 import { createClient } from "@/utils/supabase/server"
 import { getAuthContext } from "@/utils/auth/auth.service"
 
@@ -15,7 +15,7 @@ export async function createCourseAction(
     const userId = user.data.user!.id;
 
     if (userId == "") {
-        redirect("teacher/courses", RedirectType.replace)
+        redirect("teacher/courses")
     }
 
     const result = CourseCreateForm.safeParse({ title: formData.get("title") })
@@ -31,7 +31,7 @@ export async function createCourseAction(
         }
     })
 
-    redirect(`/teacher/courses/${course.id}`, RedirectType.push)
+    redirect(`/teacher/courses/${course.id}`)
 }
 
 export async function courseFormAction(courseId: string, formData: FormData) {
@@ -40,7 +40,7 @@ export async function courseFormAction(courseId: string, formData: FormData) {
     const userId = (await context.getUser()).data.user!.id;
 
     if (!userId) {
-        redirect("/teacher/courses", RedirectType.replace);
+        redirect("/teacher/courses");
     }
 
     const result = CourseFormSchema.safeParse({
@@ -70,7 +70,7 @@ export async function courseFormAction(courseId: string, formData: FormData) {
             description: result.data.description,
             price: result.data.price,
             imageUrl: result.data.imageUrl,
-            categoryId: result.data.categoryId || null
+            categoryId: result.data.categoryId || null,
         }
     });
 

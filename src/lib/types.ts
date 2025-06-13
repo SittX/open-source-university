@@ -12,7 +12,7 @@ export const CourseFormSchema = z.object({
     price: z.number().min(0, "Price must not be less than 0"),
     imageUrl: z.string(),
     categoryId: z.string(),
-    attachmentId: z.array(z.string())
+    attachmentIds: z.array(z.string()).optional()
 })
 
 export type CourseFormValues = z.infer<typeof CourseFormSchema>

@@ -1,7 +1,11 @@
 import { prisma } from "@/lib/db";
 import React from "react";
 import { redirect } from "next/navigation";
-import CourseForm from "../_components/CourseForm";
+import CourseDetailsForm from "../_components/CourseDetailsForm";
+import CourseAttachmentsForm from "../_components/CourseAttachmentsForm";
+import CourseChaptersForm from "../_components/CourseChaptersForm";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { FileText, Layers } from "lucide-react";
 
 type PageProps = {
   params: Promise<{
@@ -28,31 +32,35 @@ const CourseDetailsPage = async ({ params }: PageProps) => {
 
   const categories = await prisma.category.findMany();
 
-  const requiredFields = [
-    course.title,
-    course.description,
-    course.categoryId,
-    course.price,
-  ];
-
-  const totalFields = requiredFields.length;
-  const completedFields = requiredFields.filter(Boolean).length;
-  const completionIndicationText = `(${completedFields}/${totalFields}) required fields remaining`;
-
   return (
-    <div className="p-6 h-full">
-      <div className="flex items-center justify-between">
-        <div className="flex flex-col gap-y-2">
-          <h1 className="text-2xl font-medium">Course Setup</h1>
-          <span className="text-sm text-slate-500 italic">
-            {completedFields === totalFields ? "" : completionIndicationText}
-          </span>
-          <h2 className="font-xl">Edit course details</h2>
-        </div>
-      </div>
-      <div className="mt-6">
-        <CourseForm data={course} categories={categories} />
-      </div>
+    <div className="flex flex-col gap-4 p-4">
+      <h1 className="text-2xl font-medium">Course Setup</h1>
+      <Tabs className="w-full" defaultValue="details">
+        <TabsList className="grid w-full grid-cols-3 mb-6">
+          <TabsTrigger value="details" className="flex items-center gap-2">
+            <FileText className="h-4 w-4" />
+            <span className="hidden sm:inline">Course Details</span>
+          </TabsTrigger>
+          <TabsTrigger value="attachments" className="flex items-center gap-2">
+            <FileText className="h-4 w-4" />
+            <span className="hidden sm:inline">Attachments</span>
+          </TabsTrigger>
+          <TabsTrigger value="chapters" className="flex items-center gap-2">
+            <Layers className="h-4 w-4" />
+            <span className="hidden sm:inline">Chapters Setup</span>
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="details">
+          <CourseDetailsForm data={course} categories={categories} />
+        </TabsContent>
+        <TabsContent value="attachments">
+          <CourseAttachmentsForm />
+        </TabsContent>
+        <TabsContent value="chapters">
+          <CourseChaptersForm />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };
