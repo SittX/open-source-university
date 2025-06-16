@@ -7,10 +7,10 @@ import {
   X,
   File,
   ImageIcon,
-  Video,
   Music,
   AlertCircle,
   Check,
+  Video,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -18,6 +18,37 @@ import { cn } from "@/lib/utils";
 import { Alert, AlertDescription } from "./alert";
 import { Badge } from "./badge";
 import { Progress } from "./progress";
+import { createClient } from "@/utils/supabase/client";
+
+// Create Supabase client
+// const supabase = createClient(
+//   "https://hoemcrsqbilgpihehzqt.supabase.co",
+//   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhvZW1jcnNxYmlsZ3BpaGVoenF0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc2NjMwNDgsImV4cCI6MjA2MzIzOTA0OH0.5Dg2vDefWrN60ORZ9dPv5ZAKHWU2JJODCgZFh0OFEPs"
+// );
+
+const supabase = createClient();
+
+// Upload file using standard upload
+async function uploadFile(file: File) {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  console.log("User in the file upload function: ", user);
+
+  const { data, error } = await supabase.storage
+    .from("course-attachments")
+    .upload(`${user?.id}/${file.name}`, file);
+
+  if (error) {
+    console.error("File upload error : ", error);
+    // Handle error
+  } else {
+    console.log("File upload success !!!");
+    console.log("Supabase storage data : ", data);
+    // Handle success
+  }
+}
 
 export interface FileUploadConfig {
   maxFileSize?: number; // in MB
@@ -29,7 +60,7 @@ export interface FileUploadConfig {
 export interface UploadedFile {
   id: string;
   file: File;
-  preview?: string;
+  previewUrl?: string;
   progress: number;
   status: "uploading" | "completed" | "error";
   error?: string;
@@ -44,8 +75,8 @@ interface FileUploadProps {
 
 const defaultConfig: FileUploadConfig = {
   maxFileSize: 10, // 10MB
-  maxFiles: 1,
-  acceptedFileTypes: ["image/*"],
+  maxFiles: 5,
+  acceptedFileTypes: ["image/*", "application/pdf", "video/*"],
   allowMultiple: true,
 };
 
@@ -108,17 +139,12 @@ export function FileUpload({
     return null;
   };
 
-  const createFilePreview = (file: File): Promise<string | undefined> => {
-    return new Promise((resolve) => {
-      if (file.type.startsWith("image/")) {
-        const reader = new FileReader();
-        reader.onload = (e) => resolve(e.target?.result as string);
-        reader.onerror = () => resolve(undefined);
-        reader.readAsDataURL(file);
-      } else {
-        resolve(undefined);
-      }
-    });
+  const createFilePreview = (file: File): string => {
+    if (file.type.endsWith("/*")) {
+      return URL.createObjectURL(file);
+    } else {
+      return "";
+    }
   };
 
   const processFiles = async (fileList: FileList) => {
@@ -167,43 +193,10 @@ export function FileUpload({
 
     // Simulate upload progress
     newUploadedFiles.forEach((uploadedFile, index) => {
-      simulateUpload(uploadedFile.id);
+      console.log("Uploading files", uploadedFile);
+      uploadFile(uploadedFile.file);
+      // simulateUpload(uploadedFile.id);
     });
-  };
-
-  const simulateUpload = (fileId: string) => {
-    const interval = setInterval(() => {
-      setFiles((prevFiles) =>
-        prevFiles.map((file) => {
-          if (file.id === fileId) {
-            const newProgress = Math.min(
-              file.progress + Math.random() * 30,
-              100
-            );
-            const isCompleted = newProgress >= 100;
-
-            return {
-              ...file,
-              progress: newProgress,
-              status: isCompleted ? "completed" : "uploading",
-            };
-          }
-          return file;
-        })
-      );
-    }, 200);
-
-    // Clear interval when upload completes
-    setTimeout(() => {
-      clearInterval(interval);
-      setFiles((prevFiles) =>
-        prevFiles.map((file) =>
-          file.id === fileId
-            ? { ...file, progress: 100, status: "completed" }
-            : file
-        )
-      );
-    }, 2000 + Math.random() * 3000);
   };
 
   const removeFile = (fileId: string) => {
@@ -226,6 +219,7 @@ export function FileUpload({
     (e: React.DragEvent) => {
       e.preventDefault();
       setIsDragOver(false);
+      console.log("Handle Drop callback is invoked");
 
       const droppedFiles = e.dataTransfer.files;
       if (droppedFiles.length > 0) {
@@ -337,7 +331,22 @@ export function FileUpload({
                   <div className="flex items-start gap-3">
                     {/* File Preview/Icon */}
                     <div className="flex-shrink-0">
-                      {uploadedFile.preview ? (
+                      {uploadedFile.file.type.startsWith("image/") ? (
+                        <img
+                          src={uploadedFile.previewUrl}
+                          alt={uploadedFile.file.name}
+                          className="w-12 h-12 object-cover rounded border"
+                        />
+                      ) : (
+                        <video
+                          src={uploadedFile.previewUrl}
+                          autoPlay
+                          loop
+                          muted
+                          className="w-12 h-12 object-cover rounded border"
+                        />
+                      )}
+                      {/* {uploadedFile.preview ? (
                         <img
                           src={uploadedFile.preview || "/placeholder.svg"}
                           alt={uploadedFile.file.name}
@@ -347,7 +356,7 @@ export function FileUpload({
                         <div className="w-12 h-12 bg-muted rounded border flex items-center justify-center">
                           <FileIcon className="h-6 w-6 text-muted-foreground" />
                         </div>
-                      )}
+                      )} */}
                     </div>
 
                     {/* File Info */}
