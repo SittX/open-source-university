@@ -22,7 +22,7 @@ import {
 import { signupSchema } from "@/lib/validations/auth";
 import { AuthError } from "@supabase/supabase-js";
 import OAuthButton from "./oauth-button";
-import { signup } from "@/app/(auth)/(routes)/sign-up/action";
+import { signup } from "@/actions/auth/signup-action";
 
 type SignupFormValues = z.infer<typeof signupSchema>;
 

@@ -15,7 +15,7 @@ export async function signInWithGithub() {
     })
 
     if (error) {
-        redirect("/login")
+        redirect("/auth/login")
     }
 
     if (data.url) {

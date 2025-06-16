@@ -24,7 +24,7 @@ import { Category } from "@prisma/client";
 import { Save } from "lucide-react";
 import React, { useActionState } from "react";
 import { useForm } from "react-hook-form";
-import { courseFormAction } from "../_actions/action";
+import { courseFormAction } from "../../../../../../actions/courses/action";
 import { redirect } from "next/navigation";
 
 type CourseFormProps = {

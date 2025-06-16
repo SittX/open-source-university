@@ -1,11 +1,12 @@
 import { prisma } from "@/lib/db";
 import React from "react";
 import { redirect } from "next/navigation";
-import CourseDetailsForm from "../_components/CourseDetailsForm";
-import CourseAttachmentsForm from "../_components/CourseAttachmentsForm";
-import CourseChaptersForm from "../_components/CourseChaptersForm";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FileText, Layers } from "lucide-react";
+import CourseDetailsForm from "../../_components/CourseDetailsForm";
+import CourseAttachmentsForm from "../../_components/CourseAttachmentsForm";
+import CourseChaptersForm from "../../_components/CourseChaptersForm";
+import { useCourseFormContext } from "@/contexts/CourseFormContext";
 
 type PageProps = {
   params: Promise<{
@@ -19,6 +20,7 @@ const CourseDetailsPage = async ({ params }: PageProps) => {
   if (!id) {
     return redirect("/teacher/courses");
   }
+  // OpenSourceUniversityDev
 
   const course = await prisma.course.findUnique({
     where: {
@@ -31,6 +33,9 @@ const CourseDetailsPage = async ({ params }: PageProps) => {
   }
 
   const categories = await prisma.category.findMany();
+
+  const contextData = useCourseFormContext();
+  console.log("Context Data for course form : ", contextData);
 
   return (
     <div className="flex flex-col gap-4 p-4">

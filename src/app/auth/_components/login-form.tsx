@@ -3,7 +3,7 @@
 import { useActionState, useState } from "react";
 import Link from "next/link";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, Form } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { motion } from "framer-motion";
 import { Eye, EyeOff, Github } from "lucide-react";
@@ -21,8 +21,9 @@ import {
 } from "@/components/ui/card";
 import { AuthError } from "@supabase/supabase-js";
 import { loginSchema } from "@/lib/validations/auth";
-import { login } from "@/app/(auth)/(routes)/login/action";
+import { login } from "@/actions/auth/login-action";
 import OAuthButton from "./oauth-button";
+import { Form } from "@/components/ui/form";
 
 type LoginFormValues = z.infer<typeof loginSchema>;
 
@@ -48,7 +49,7 @@ export default function LoginForm() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
     >
-      <Card className="w-full shadow-lg border-0">
+      <Card className="w-full shadow-2xl border-black">
         <CardHeader>
           <CardTitle className="text-2xl">Welcome back</CardTitle>
           <CardDescription>
@@ -63,7 +64,6 @@ export default function LoginForm() {
                 <Input
                   id="login-email"
                   type="email"
-                  placeholder="name@example.com"
                   autoComplete="email"
                   disabled={isLoading}
                   {...form.register("email")}
@@ -89,7 +89,6 @@ export default function LoginForm() {
                   <Input
                     id="login-password"
                     type={showPassword ? "text" : "password"}
-                    placeholder="••••••••"
                     autoComplete="current-password"
                     disabled={isLoading}
                     {...form.register("password")}
