@@ -34,15 +34,15 @@ const CourseDetailsPage = async ({ params }: PageProps) => {
 
   const categories = await prisma.category.findMany();
 
-  const contextData = useCourseFormContext();
-  console.log("Context Data for course form : ", contextData);
-
   return (
     <div className="flex flex-col gap-4 p-4">
       <h1 className="text-2xl font-medium">Course Setup</h1>
       <Tabs className="w-full" defaultValue="details">
         <TabsList className="grid w-full grid-cols-3 mb-6">
-          <TabsTrigger value="details" className="flex items-center gap-2">
+          <TabsTrigger
+            value="details"
+            className="flex items-center gap-2 border-2"
+          >
             <FileText className="h-4 w-4" />
             <span className="hidden sm:inline">Course Details</span>
           </TabsTrigger>

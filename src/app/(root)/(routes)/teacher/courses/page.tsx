@@ -30,9 +30,13 @@ const CoursesPage = async () => {
         </Link>
       </div>
       <div className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {courses.map((course) => {
-          return <CourseCard course={course} key={course.id} />;
-        })}
+        {courses.length === 0 ? (
+          <div>No courses</div>
+        ) : (
+          courses.map((course) => (
+            <CourseCard course={course} key={course.id} />
+          ))
+        )}
       </div>
     </div>
   );

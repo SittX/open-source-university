@@ -26,6 +26,7 @@ import React, { useActionState } from "react";
 import { useForm } from "react-hook-form";
 import { courseFormAction } from "../../../../../../actions/courses/action";
 import { redirect } from "next/navigation";
+import { useCourseFormContext } from "@/contexts/CourseFormContext";
 
 type CourseFormProps = {
   data: {
@@ -67,6 +68,9 @@ const CourseDetailsForm = ({ data, categories }: CourseFormProps) => {
   const totalFields = requiredFields.length;
   const completedFields = requiredFields.filter(Boolean).length;
   const completionIndicationText = `(${completedFields}/${totalFields}) required fields remaining`;
+
+  const contextCourse = useCourseFormContext();
+  console.log("Context data for Course :", contextCourse);
 
   return (
     <div className="flex flex-col gap-4">
@@ -180,7 +184,7 @@ const CourseDetailsForm = ({ data, categories }: CourseFormProps) => {
             name="imageUrl"
             render={({ field }) => {
               return (
-                <FormItem>
+                <FormItem className="col-span-2">
                   <FormLabel>Course Image</FormLabel>
 
                   <FormControl>
@@ -193,7 +197,7 @@ const CourseDetailsForm = ({ data, categories }: CourseFormProps) => {
             }}
           />
 
-          <div className="flex mt-4 gap-4">
+          <div className="flex gap-2">
             <Button type="submit" disabled={isLoading}>
               <Save />
               Save

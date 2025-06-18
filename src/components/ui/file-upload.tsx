@@ -20,12 +20,6 @@ import { Badge } from "./badge";
 import { Progress } from "./progress";
 import { createClient } from "@/utils/supabase/client";
 
-// Create Supabase client
-// const supabase = createClient(
-//   "https://hoemcrsqbilgpihehzqt.supabase.co",
-//   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhvZW1jcnNxYmlsZ3BpaGVoenF0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc2NjMwNDgsImV4cCI6MjA2MzIzOTA0OH0.5Dg2vDefWrN60ORZ9dPv5ZAKHWU2JJODCgZFh0OFEPs"
-// );
-
 const supabase = createClient();
 
 // Upload file using standard upload
