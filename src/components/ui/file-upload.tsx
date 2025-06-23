@@ -5,7 +5,7 @@ import { useState, useCallback, useRef } from "react";
 import {
   Upload,
   X,
-  File,
+  File as FileIcon,
   ImageIcon,
   Music,
   AlertCircle,
@@ -19,28 +19,33 @@ import { Alert, AlertDescription } from "./alert";
 import { Badge } from "./badge";
 import { Progress } from "./progress";
 import { createClient } from "@/utils/supabase/client";
-
-const supabase = createClient();
+import { toast } from "sonner";
+import { mergeConfigs } from "tailwind-merge";
 
 // Upload file using standard upload
-async function uploadFile(file: File) {
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  console.log("User in the file upload function: ", user);
-
+async function uploadFile(
+  uploadFile: UploadFile,
+  bucket: string,
+  filePath: string,
+  onUploadComplete?: (url: string) => void
+) {
+  const supabase = createClient();
+  const fileName = uploadFile.file.name;
   const { data, error } = await supabase.storage
-    .from("course-attachments")
-    .upload(`${user?.id}/${file.name}`, file);
-
+    .from(bucket)
+    .upload(`${filePath}/${fileName}`, uploadFile.file, { upsert: true });
   if (error) {
-    console.error("File upload error : ", error);
     // Handle error
   } else {
-    console.log("File upload success !!!");
-    console.log("Supabase storage data : ", data);
-    // Handle success
+    // Get public URL and call callback
+    const { data: publicUrlData } = supabase.storage
+      .from(bucket)
+      .getPublicUrl(`${filePath}/${fileName}`);
+    if (onUploadComplete && publicUrlData?.publicUrl) {
+      console.log("Uploading file complete");
+      toast.success("Uploading file complete!");
+      onUploadComplete(publicUrlData.publicUrl);
+    }
   }
 }
 
@@ -49,9 +54,11 @@ export interface FileUploadConfig {
   maxFiles?: number;
   acceptedFileTypes?: string[];
   allowMultiple?: boolean;
+  bucket: string;
+  path: string;
 }
 
-export interface UploadedFile {
+export interface UploadFile {
   id: string;
   file: File;
   previewUrl?: string;
@@ -62,9 +69,9 @@ export interface UploadedFile {
 
 interface FileUploadProps {
   config?: FileUploadConfig;
-  onFilesChange?: (files: UploadedFile[]) => void;
-  onUpload?: (files: File[]) => Promise<void>;
   className?: string;
+  onUploadComplete?: (url: string) => void;
+  files?: FileList;
 }
 
 const defaultConfig: FileUploadConfig = {
@@ -72,14 +79,16 @@ const defaultConfig: FileUploadConfig = {
   maxFiles: 5,
   acceptedFileTypes: ["image/*", "application/pdf", "video/*"],
   allowMultiple: true,
+  bucket: "",
+  path: "",
 };
 
 const getFileIcon = (fileType: string) => {
   if (fileType.startsWith("image/")) return ImageIcon;
   if (fileType.startsWith("video/")) return Video;
   if (fileType.startsWith("audio/")) return Music;
-  if (fileType.includes("pdf") || fileType.startsWith("text/")) return File;
-  return File;
+  if (fileType.includes("pdf") || fileType.startsWith("text/")) return FileIcon;
+  return FileIcon;
 };
 
 const formatFileSize = (bytes: number): string => {
@@ -94,24 +103,26 @@ const formatFileSize = (bytes: number): string => {
 
 export function FileUpload({
   config = defaultConfig,
-  onFilesChange,
-  onUpload,
   className,
+  onUploadComplete,
+  files: existingFiles,
 }: FileUploadProps) {
-  const [files, setFiles] = useState<UploadedFile[]>([]);
-  const [isDragOver, setIsDragOver] = useState(false);
+  const [files, setFiles] = useState<UploadFile[]>([]);
+  const [isDragOver, setIsDragOver] = useState<boolean>(false);
   const [errors, setErrors] = useState<string[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const mergedConfig = { ...defaultConfig, ...config };
 
+  const acceptFileTypes = config.acceptedFileTypes?.join(",") || "*";
+  /* File util methods */
   const validateFile = (file: File): string | null => {
-    // Check file size
+    /* File size validation */
     if (file.size > mergedConfig.maxFileSize! * 1024 * 1024) {
-      return `File size exceeds ${mergedConfig.maxFileSize}MB limit`;
+      return `File size exceeded ${mergedConfig.maxFileSize}MB limit`;
     }
 
-    // Check file type
+    /* File type validation */
     if (
       mergedConfig.acceptedFileTypes &&
       mergedConfig.acceptedFileTypes.length > 0
@@ -124,8 +135,10 @@ export function FileUpload({
       });
 
       if (!isValidType) {
-        return `File type not supported. Accepted types: ${mergedConfig.acceptedFileTypes.join(
-          ", "
+        return `File type ${
+          file.type
+        } is not supported. Accepted types : ${mergedConfig.acceptedFileTypes.join(
+          ","
         )}`;
       }
     }
@@ -133,72 +146,65 @@ export function FileUpload({
     return null;
   };
 
-  const createFilePreview = (file: File): string => {
-    if (file.type.endsWith("/*")) {
+  const createFilePreview = async (file: File) => {
+    if (file.type.startsWith("image")) {
       return URL.createObjectURL(file);
-    } else {
-      return "";
     }
   };
 
   const processFiles = async (fileList: FileList) => {
-    const newErrors: string[] = [];
+    const errors: string[] = [];
     const validFiles: File[] = [];
-
-    // Check total file count
     if (files.length + fileList.length > mergedConfig.maxFiles!) {
-      newErrors.push(`Maximum ${mergedConfig.maxFiles} files allowed`);
-      setErrors(newErrors);
+      errors.push(`Maximum ${mergedConfig.maxFiles} files allowed`);
       return;
     }
 
-    // Validate each file
     Array.from(fileList).forEach((file) => {
       const error = validateFile(file);
       if (error) {
-        newErrors.push(`${file.name}: ${error}`);
+        errors.push(`${file.name} : ${error}`);
       } else {
         validFiles.push(file);
       }
     });
 
-    if (newErrors.length > 0) {
-      setErrors(newErrors);
+    if (errors.length > 0) {
+      setErrors(errors);
       return;
     }
 
-    // Clear previous errors
     setErrors([]);
 
-    // Create uploaded file objects
-    const newUploadedFiles: UploadedFile[] = await Promise.all(
+    const newUploadingFiles: UploadFile[] = await Promise.all(
       validFiles.map(async (file) => ({
-        id: Math.random().toString(36).substr(2, 9),
+        id: Math.random().toString(36).substring(2, 9),
         file,
-        preview: await createFilePreview(file),
+        previewUrl: await createFilePreview(file),
         progress: 0,
-        status: "uploading" as const,
+        status: "uploading",
       }))
     );
 
-    const updatedFiles = [...files, ...newUploadedFiles];
+    const updatedFiles = [...files, ...newUploadingFiles];
     setFiles(updatedFiles);
-    onFilesChange?.(updatedFiles);
 
-    // Simulate upload progress
-    newUploadedFiles.forEach((uploadedFile, index) => {
-      console.log("Uploading files", uploadedFile);
-      uploadFile(uploadedFile.file);
-      // simulateUpload(uploadedFile.id);
+    newUploadingFiles.forEach(async (file) => {
+      await uploadFile(
+        file,
+        mergedConfig.bucket,
+        mergedConfig.path,
+        onUploadComplete
+      );
+      console.log("Uploading File : ", file);
     });
   };
 
-  const removeFile = (fileId: string) => {
-    const updatedFiles = files.filter((file) => file.id !== fileId);
-    setFiles(updatedFiles);
-    onFilesChange?.(updatedFiles);
-  };
+  if (existingFiles && existingFiles.length > 0) {
+    processFiles(existingFiles);
+  }
 
+  /* Handlers for file drag-and-drop events */
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     setIsDragOver(true);
@@ -223,6 +229,7 @@ export function FileUpload({
     [files, mergedConfig]
   );
 
+  /* Handlers for file input */
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = e.target.files;
     if (selectedFiles && selectedFiles.length > 0) {
@@ -234,19 +241,8 @@ export function FileUpload({
     }
   };
 
-  const handleUpload = async () => {
-    if (onUpload) {
-      const completedFiles = files
-        .filter((f) => f.status === "completed")
-        .map((f) => f.file);
-
-      if (completedFiles.length > 0) {
-        await onUpload(completedFiles);
-      }
-    }
-  };
-
-  const acceptedTypes = mergedConfig.acceptedFileTypes?.join(",") || "*";
+  const handleFileRemove = useCallback((id: string) => {}, []);
+  const handleFileUpload = useCallback(() => {}, []);
 
   return (
     <div className={cn("w-full space-y-4", className)}>
@@ -263,7 +259,7 @@ export function FileUpload({
         onDrop={handleDrop}
         onClick={() => fileInputRef.current?.click()}
       >
-        <CardContent className="flex flex-col items-center justify-center p-8 text-center">
+        <CardContent className="flex flex-col items-center justify-center p-4 text-center">
           <Upload
             className={cn(
               "h-12 w-12 mb-4 transition-colors",
@@ -290,7 +286,7 @@ export function FileUpload({
         ref={fileInputRef}
         type="file"
         multiple={mergedConfig.allowMultiple}
-        accept={acceptedTypes}
+        accept={acceptFileTypes}
         onChange={handleFileSelect}
         className="hidden"
         aria-label="File upload input"
@@ -325,24 +321,9 @@ export function FileUpload({
                   <div className="flex items-start gap-3">
                     {/* File Preview/Icon */}
                     <div className="flex-shrink-0">
-                      {uploadedFile.file.type.startsWith("image/") ? (
+                      {uploadedFile.previewUrl ? (
                         <img
-                          src={uploadedFile.previewUrl}
-                          alt={uploadedFile.file.name}
-                          className="w-12 h-12 object-cover rounded border"
-                        />
-                      ) : (
-                        <video
-                          src={uploadedFile.previewUrl}
-                          autoPlay
-                          loop
-                          muted
-                          className="w-12 h-12 object-cover rounded border"
-                        />
-                      )}
-                      {/* {uploadedFile.preview ? (
-                        <img
-                          src={uploadedFile.preview || "/placeholder.svg"}
+                          src={uploadedFile.previewUrl || "/placeholder.svg"}
                           alt={uploadedFile.file.name}
                           className="w-12 h-12 object-cover rounded border"
                         />
@@ -350,7 +331,7 @@ export function FileUpload({
                         <div className="w-12 h-12 bg-muted rounded border flex items-center justify-center">
                           <FileIcon className="h-6 w-6 text-muted-foreground" />
                         </div>
-                      )} */}
+                      )}
                     </div>
 
                     {/* File Info */}
@@ -384,7 +365,7 @@ export function FileUpload({
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => removeFile(uploadedFile.id)}
+                          onClick={() => handleFileRemove(uploadedFile.id)}
                           className="h-8 w-8 p-0 flex-shrink-0"
                           aria-label={`Remove ${uploadedFile.file.name}`}
                         >
@@ -419,8 +400,8 @@ export function FileUpload({
           </div>
 
           {/* Upload Button */}
-          {onUpload && files.some((f) => f.status === "completed") && (
-            <Button onClick={handleUpload} className="w-full">
+          {files.some((f) => f.status === "completed") && (
+            <Button onClick={handleFileUpload} className="w-full">
               Upload {files.filter((f) => f.status === "completed").length}{" "}
               Files
             </Button>

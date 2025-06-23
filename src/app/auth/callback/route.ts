@@ -9,6 +9,7 @@ export async function GET(request: Request) {
     const next = searchParams.get('next') ?? '/'
 
     console.log("Route: ", code, next)
+    console.log("Origin and Next ; ", origin, next)
 
     if (code) {
         const supabase = await createClient()

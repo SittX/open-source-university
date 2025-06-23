@@ -76,3 +76,7 @@ export async function courseFormAction(courseId: string, formData: FormData) {
 
     redirect(`/teacher/courses`);
 }
+
+export async function courseAttachmentsFormAction(formData: FormData) {
+
+}

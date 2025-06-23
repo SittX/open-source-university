@@ -18,6 +18,7 @@ const CoursesPage = async () => {
     },
   });
 
+  // TODO: Pagination
   return (
     <div className="p-4">
       <div className="flex justify-between">

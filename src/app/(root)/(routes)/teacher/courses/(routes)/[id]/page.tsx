@@ -2,11 +2,12 @@ import { prisma } from "@/lib/db";
 import React from "react";
 import { redirect } from "next/navigation";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { FileText, Layers } from "lucide-react";
+import { FileText, Layers, Paperclip } from "lucide-react";
 import CourseDetailsForm from "../../_components/CourseDetailsForm";
 import CourseAttachmentsForm from "../../_components/CourseAttachmentsForm";
 import CourseChaptersForm from "../../_components/CourseChaptersForm";
-import { useCourseFormContext } from "@/contexts/CourseFormContext";
+import { createClient } from "@/utils/supabase/server";
+import Image from "next/image";
 
 type PageProps = {
   params: Promise<{
@@ -32,7 +33,32 @@ const CourseDetailsPage = async ({ params }: PageProps) => {
     return redirect("/teacher/courses");
   }
 
+  const attachments = await prisma.attachment.findMany({
+    where: {
+      courseId: course?.id,
+    },
+  });
+
   const categories = await prisma.category.findMany();
+
+  const supabase = await createClient();
+
+  // const { data: fileData, error } = await supabase.storage
+  //   .from("course-attachments")
+  //   .download(`public/${course.id}/images/test.jpg`);
+  // console.log("Downloaded file: ", fileData);
+
+  // {
+  //   const { data, error } = await supabase.auth.getClaims();
+  //   console.log("Claims : ", data);
+  // }
+
+  {
+    const { data, error } = await supabase.storage
+      .from("course-attachments")
+      .list(`${course.id}`);
+    console.log("Listing files: ", data);
+  }
 
   return (
     <div className="flex flex-col gap-4 p-4">
@@ -47,8 +73,8 @@ const CourseDetailsPage = async ({ params }: PageProps) => {
             <span className="hidden sm:inline">Course Details</span>
           </TabsTrigger>
           <TabsTrigger value="attachments" className="flex items-center gap-2">
-            <FileText className="h-4 w-4" />
-            <span className="hidden sm:inline">Attachments</span>
+            <Paperclip className="h-4 w-4" />
+            <span className="hidden sm:inline">Course Attachments</span>
           </TabsTrigger>
           <TabsTrigger value="chapters" className="flex items-center gap-2">
             <Layers className="h-4 w-4" />
@@ -60,7 +86,7 @@ const CourseDetailsPage = async ({ params }: PageProps) => {
           <CourseDetailsForm data={course} categories={categories} />
         </TabsContent>
         <TabsContent value="attachments">
-          <CourseAttachmentsForm />
+          <CourseAttachmentsForm course={course} attachments={attachments} />
         </TabsContent>
         <TabsContent value="chapters">
           <CourseChaptersForm />

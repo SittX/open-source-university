@@ -19,8 +19,8 @@ model Course {
   createdBy   String
   updatedAt   DateTime     @updatedAt
   categoryId  String?
-  category    Category?    @relation(fields: [categoryId], references: [id])
   attachments Attachment[]
+  category    Category?    @relation(fields: [categoryId], references: [id])
 }
 
 model Category {
@@ -30,10 +30,32 @@ model Category {
 }
 
 model Attachment {
-  id   String @id @default(cuid())
-  name String
-  url  String
-
+  id       String @id @default(cuid())
+  name     String
+  description String
+  type attachmenttype 
+  url      String
   courseId String
   course   Course @relation(fields: [courseId], references: [id])
+}
+
+enum attachmenttype{
+  VIDEO
+  POWERPOINT
+  PDF
+  IMAGE
+}
+
+model userroles {
+  id      BigInt  @id @default(autoincrement())
+  user_id String?
+  role    approle
+
+  @@unique([user_id, role])
+}
+
+enum approle {
+  ADMIN
+  USER
+  TEACHER
 }
