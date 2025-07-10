@@ -11,14 +11,14 @@ datasource db {
 model Course {
   id          String       @id @default(cuid())
   title       String
-  description String?
-  imageUrl    String?
+  description String? 
+  imageUrl    String? @map("image_url")
   price       Float?
-  isPublished Boolean      @default(false)
-  createdAt   DateTime     @default(now())
-  createdBy   String
-  updatedAt   DateTime     @updatedAt
-  categoryId  String?
+  isPublished Boolean      @default(false) @map("is_published")
+  createdAt   DateTime     @default(now()) @map("created_at")
+  createdBy   String @map("created_by")
+  updatedAt   DateTime     @updatedAt @map("updated_at")
+  categoryId  String? @map("category_id")
   attachments Attachment[]
   category    Category?    @relation(fields: [categoryId], references: [id])
 }
@@ -32,11 +32,13 @@ model Category {
 model Attachment {
   id       String @id @default(cuid())
   name     String
-  description String
+  description String?
   type attachmenttype 
   url      String
-  courseId String
+  courseId String @map("course_id")
+  fileSize Int @map("file_size")
   course   Course @relation(fields: [courseId], references: [id])
+  createdAt DateTime @default(now())
 }
 
 enum attachmenttype{
@@ -46,7 +48,7 @@ enum attachmenttype{
   IMAGE
 }
 
-model userroles {
+model UserRoles {
   id      BigInt  @id @default(autoincrement())
   user_id String?
   role    approle

@@ -16,3 +16,17 @@ export const CourseFormSchema = z.object({
 })
 
 export type CourseFormValues = z.infer<typeof CourseFormSchema>
+
+export const CourseAttachmentFormSchema = z.object({
+    name: z.string(),
+    fileSize: z.string(),
+    fileType: z.string(),
+    publicUrl: z.string(),
+    courseId: z.string()
+})
+
+export const CourseAttachmentUpdateFormSchema = z.object({
+    name: z.string(),
+    description: z.string(),
+    attachmentId: z.string(),
+})

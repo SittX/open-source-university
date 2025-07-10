@@ -15,10 +15,12 @@ export async function signInWithGithub() {
     })
 
     if (error) {
+        console.error("Error with OAuth login : ", error)
         redirect("/auth/login")
     }
 
     if (data.url) {
+        console.log("Redirecting URL : ", data.url)
         redirect(data.url) // use the redirect API for your server framework
     }
 }

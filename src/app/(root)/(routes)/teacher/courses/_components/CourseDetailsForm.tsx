@@ -281,9 +281,12 @@ const CourseDetailsForm = ({ data, categories }: CourseFormProps) => {
                               maxFileSize: 5,
                               acceptedFileTypes: ["image/*"],
                             }}
-                            onUploadComplete={(url) => {
-                              console.log("Uploaded File public url : ", url);
-                              form.setValue("imageUrl", url);
+                            onUploadComplete={(file) => {
+                              console.log(
+                                "Uploaded File public url : ",
+                                file.publicUrl
+                              );
+                              form.setValue("imageUrl", file.publicUrl ?? "");
                             }}
                           />
                         )}

@@ -20,20 +20,21 @@ import { Badge } from "./badge";
 import { Progress } from "./progress";
 import { createClient } from "@/utils/supabase/client";
 import { toast } from "sonner";
-import { mergeConfigs } from "tailwind-merge";
+import { formatFileSize, getFileIcon } from "@/utils/file-utils";
 
 // Upload file using standard upload
 async function uploadFile(
   uploadFile: UploadFile,
   bucket: string,
   filePath: string,
-  onUploadComplete?: (url: string) => void
+  onUploadComplete?: (file: UploadFile) => void
 ) {
   const supabase = createClient();
   const fileName = uploadFile.file.name;
-  const { data, error } = await supabase.storage
+  const { data: fileData, error } = await supabase.storage
     .from(bucket)
     .upload(`${filePath}/${fileName}`, uploadFile.file, { upsert: true });
+
   if (error) {
     // Handle error
   } else {
@@ -44,7 +45,7 @@ async function uploadFile(
     if (onUploadComplete && publicUrlData?.publicUrl) {
       console.log("Uploading file complete");
       toast.success("Uploading file complete!");
-      onUploadComplete(publicUrlData.publicUrl);
+      onUploadComplete({ ...uploadFile, publicUrl: publicUrlData.publicUrl });
     }
   }
 }
@@ -62,6 +63,7 @@ export interface UploadFile {
   id: string;
   file: File;
   previewUrl?: string;
+  publicUrl?: string;
   progress: number;
   status: "uploading" | "completed" | "error";
   error?: string;
@@ -70,7 +72,7 @@ export interface UploadFile {
 interface FileUploadProps {
   config?: FileUploadConfig;
   className?: string;
-  onUploadComplete?: (url: string) => void;
+  onUploadComplete?: (file: UploadFile) => void;
   files?: FileList;
 }
 
@@ -81,24 +83,6 @@ const defaultConfig: FileUploadConfig = {
   allowMultiple: true,
   bucket: "",
   path: "",
-};
-
-const getFileIcon = (fileType: string) => {
-  if (fileType.startsWith("image/")) return ImageIcon;
-  if (fileType.startsWith("video/")) return Video;
-  if (fileType.startsWith("audio/")) return Music;
-  if (fileType.includes("pdf") || fileType.startsWith("text/")) return FileIcon;
-  return FileIcon;
-};
-
-const formatFileSize = (bytes: number): string => {
-  if (bytes === 0) return "0 Bytes";
-  const k = 1024;
-  const sizes = ["Bytes", "KB", "MB", "GB"];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return (
-    Number.parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i]
-  );
 };
 
 export function FileUpload({
@@ -196,7 +180,12 @@ export function FileUpload({
         mergedConfig.path,
         onUploadComplete
       );
-      console.log("Uploading File : ", file);
+      console.log("Uploaded File : ", file);
+      setFiles(
+        files.filter((f) => {
+          f.id !== file.id;
+        })
+      );
     });
   };
 

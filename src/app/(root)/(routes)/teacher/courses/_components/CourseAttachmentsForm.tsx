@@ -5,8 +5,8 @@ import CourseAttachmentCard from "./CourseAttachmentCard";
 import { toast } from "sonner";
 import { Attachment, Course } from "@prisma/client";
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
 import { File, Upload } from "lucide-react";
+import { courseAttachmentsFormAction } from "@/actions/courses/action";
 
 type CourseAttachmentProps = {
   course: Course;
@@ -41,10 +41,17 @@ const CourseAttachmentsForm = ({
               maxFileSize: 5,
               acceptedFileTypes: ["image/*"],
             }}
-            onUploadComplete={(url) => {
-              console.log("Uploaded File public url : ", url);
+            onUploadComplete={(file) => {
+              console.log("Uploaded File: ", file);
               toast.success("Successful upload of attachment file");
               // Save to the database
+              const formData = new FormData();
+              formData.append("fileType", file.file.type);
+              formData.append("name", file.file.name);
+              formData.append("publicUrl", file.publicUrl ?? "");
+              formData.append("fileSize", String(file.file.size));
+              formData.append("courseId", course.id);
+              courseAttachmentsFormAction(formData);
             }}
           />
         </CardContent>
@@ -53,13 +60,9 @@ const CourseAttachmentsForm = ({
       <Card>
         <CardHeader>
           <CardTitle>
-            <div className="flex justify-between items-center">
-              <span className="flex items-center gap-2">
-                <File className="w-4 h-4" /> Course Attachments (
-                {courses.length})
-              </span>
-              <Button>Add Attachment</Button>
-            </div>
+            <span className="flex items-center gap-2">
+              <File className="w-4 h-4" /> Course Attachments ({courses.length})
+            </span>
           </CardTitle>
         </CardHeader>
         <CardContent>

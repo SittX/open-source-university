@@ -7,7 +7,6 @@ import CourseDetailsForm from "../../_components/CourseDetailsForm";
 import CourseAttachmentsForm from "../../_components/CourseAttachmentsForm";
 import CourseChaptersForm from "../../_components/CourseChaptersForm";
 import { createClient } from "@/utils/supabase/server";
-import Image from "next/image";
 
 type PageProps = {
   params: Promise<{
@@ -36,6 +35,9 @@ const CourseDetailsPage = async ({ params }: PageProps) => {
   const attachments = await prisma.attachment.findMany({
     where: {
       courseId: course?.id,
+    },
+    orderBy: {
+      createdAt: "desc",
     },
   });
 
