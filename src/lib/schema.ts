@@ -64,5 +64,5 @@ export const LessonSchema = z.object({
     contentUrl: z.string(),
     isPublished: z.boolean(),
     type: z.string(),
-    chapterId: z.number()
+    chapterId: z.string()
 }) 

@@ -1,11 +1,11 @@
 "use server"
 import { prisma } from "@/lib/db"
-import { AttachmentSchema, AttachmentUpdateSchema, CourseInitialFormSchema, CourseDetailsSchema, ChapterSchema } from "@/lib/schema"
+import { AttachmentSchema, AttachmentUpdateSchema, CourseInitialFormSchema, CourseDetailsSchema, ChapterSchema, LessonSchema } from "@/lib/schema"
 import { z } from "zod"
 import { redirect } from "next/navigation"
 import { createClient } from "@/utils/supabase/server"
 import { getAuthContext } from "@/utils/auth/auth.service"
-import { attachmenttype } from '@prisma/client';
+import { attachmenttype, LessonType } from '@prisma/client';
 import { revalidatePath } from "next/cache"
 
 export async function createCourseAction(
@@ -163,4 +163,41 @@ export async function courseChapterFormAction(formData: FormData) {
         },
     })
 
+}
+
+export async function courseChapterLessonFormAction(formData: FormData) {
+    console.log("Form Data for lesson : ", formData)
+    const result = LessonSchema.safeParse({
+        title: formData.get("title"),
+        description: formData.get("description"),
+        order: Number(formData.get("order")),
+        duration: Number(formData.get("duration")),
+        contentUrl: formData.get("contentUrl") || "",
+        isPublished: Boolean(formData.get("isPublished")),
+        type: formData.get("type"),
+        chapterId: formData.get("chapterId")
+    })
+
+    if (result.error) {
+        console.error("Error parsing lesson form: ", result.error)
+        return
+    }
+
+    console.log("Chapter Id in action : ", result.data.chapterId)
+
+    await prisma.lesson.create({
+        data: {
+            title: result.data.title,
+            description: result.data.description,
+            order: result.data.order,
+            duration: result.data.duration,
+            contentUrl: result.data.contentUrl,
+            isPublished: result.data.isPublished,
+            updatedAt: new Date(),
+            type: LessonType.DOCUMENT,
+            chapter: {
+                connect: { id: result.data.chapterId }
+            }
+        }
+    })
 }

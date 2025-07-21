@@ -172,7 +172,10 @@ const CourseChapterCard = ({
                 </DialogDescription>
               </DialogHeader>
               <div className="grid gap-4">
-                <LessonForm />
+                <LessonForm
+                  courseId={chapter.courseId}
+                  chapterId={chapter.id}
+                />
               </div>
             </DialogContent>
           </Dialog>
