@@ -24,6 +24,8 @@ import {
 import { Chapter, Course, Lesson } from "@prisma/client";
 import ChapterForm from "./ChapterForm";
 import CourseChapterCard from "./CourseChapterDndCard";
+import { Card, CardContent, CardHeader } from "../ui/card";
+import { CirclePlus } from "lucide-react";
 
 export type ChapterWithLessons = Chapter & {
   lessons: Lesson[];
@@ -63,63 +65,70 @@ const CourseChaptersForm = ({ course }: ChapterFormProps) => {
   };
 
   return (
-    <div>
-      <h2 className="text-2xl font-bold">Course Chapters Setup</h2>
-      <p>Organize your course content into chapters and lessons</p>
-      <Dialog>
-        <DialogTrigger asChild>
-          <Button>Add New Chapter</Button>
-        </DialogTrigger>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>Add Chapter</DialogTitle>
-            <DialogDescription>
-              Add a new chapter to your course.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="grid gap-4">
-            <ChapterForm courseId={course.id} />
-          </div>
-        </DialogContent>
-      </Dialog>
+    <Card className="flex-1">
+      <CardHeader>
+        <h2 className="text-2xl font-bold">Course Chapters Setup</h2>
+        <p>Organize your course content into chapters and lessons</p>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button>
+              <CirclePlus />
+              New Chapter
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>Add Chapter</DialogTitle>
+              <DialogDescription>
+                Add a new chapter to your course.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4">
+              <ChapterForm courseId={course.id} />
+            </div>
+          </DialogContent>
+        </Dialog>
 
-      <DndContext
-        sensors={chapterSensors}
-        collisionDetection={closestCenter}
-        onDragEnd={chapterDragEndEvent}
-      >
-        <SortableContext
-          items={chapters}
-          strategy={verticalListSortingStrategy}
+        <DndContext
+          sensors={chapterSensors}
+          collisionDetection={closestCenter}
+          onDragEnd={chapterDragEndEvent}
         >
-          {chapters.map((chapter, index) => (
-            <CourseChapterCard
-              index={index}
-              key={chapter.id}
-              chapter={{ ...chapter }}
-              onDelete={() => {}}
-              onEdit={() => {}}
-              onExpended={() => {}}
-              onToggleChapterPublish={() => {}}
-              onToggleExpand={(id: string) => {
-                console.log("Toggle expand chapter : ", id);
-                console.log("Chapters : ", chapters);
-                setChapters((chapters) =>
-                  chapters.map((chapter) =>
-                    chapter.id === id
-                      ? { ...chapter, isExpanded: !chapter.isExpanded }
-                      : chapter
-                  )
-                );
-              }}
-              onDeleteLesson={() => {}}
-              onEditLesson={() => {}}
-              onToggleLessonPublish={() => {}}
-            />
-          ))}
-        </SortableContext>
-      </DndContext>
-    </div>
+          <SortableContext
+            items={chapters}
+            strategy={verticalListSortingStrategy}
+          >
+            {chapters.map((chapter, index) => (
+              <CourseChapterCard
+                index={index}
+                key={chapter.id}
+                chapter={{ ...chapter }}
+                onDelete={() => {}}
+                onEdit={() => {}}
+                onExpended={() => {}}
+                onToggleChapterPublish={() => {}}
+                onToggleExpand={(id: string) => {
+                  console.log("Toggle expand chapter : ", id);
+                  console.log("Chapters : ", chapters);
+                  setChapters((chapters) =>
+                    chapters.map((chapter) =>
+                      chapter.id === id
+                        ? { ...chapter, isExpanded: !chapter.isExpanded }
+                        : chapter
+                    )
+                  );
+                }}
+                onDeleteLesson={() => {}}
+                onEditLesson={() => {}}
+                onToggleLessonPublish={() => {}}
+              />
+            ))}
+          </SortableContext>
+        </DndContext>
+      </CardContent>
+    </Card>
   );
 };
 

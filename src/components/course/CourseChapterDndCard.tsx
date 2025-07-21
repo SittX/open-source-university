@@ -21,6 +21,8 @@ import {
   GripVertical,
   Plus,
   Trash2,
+  CirclePlus,
+  BookCheck,
 } from "lucide-react";
 import { Badge } from "../ui/badge";
 import { ChapterWithLessons } from "./CourseChaptersForm";
@@ -88,7 +90,7 @@ const CourseChapterCard = ({
   const handleLessonDragStart = (event: DragStartEvent) => {};
 
   return (
-    <div className="p-6 border border-black rounded-lg">
+    <div className="p-6 border border-gray-300 rounded-lg mb-8">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4 flex-1">
           <div className="flex items-center gap-2">
@@ -162,7 +164,9 @@ const CourseChapterCard = ({
           {/* Add Lesson Button */}
           <Dialog>
             <DialogTrigger asChild>
-              <Button>Add New Lesson</Button>
+              <Button>
+                <BookCheck /> New Lesson
+              </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
               <DialogHeader>

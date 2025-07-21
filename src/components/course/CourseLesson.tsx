@@ -25,6 +25,7 @@ type CourseLessonProps = {
   onTogglePublished: () => void;
 };
 const CourseLesson = ({
+  index,
   lesson,
   onDelete,
   onEdit,
@@ -83,7 +84,7 @@ const CourseLesson = ({
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 mb-1">
           <h4 className="text-sm font-semibold text-gray-900">
-            {/* {index + 1}. {lesson.title} */}
+            {index + 1}. {lesson.title}
           </h4>
           <div className="flex items-center gap-1">
             <Badge

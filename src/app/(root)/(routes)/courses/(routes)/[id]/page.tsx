@@ -6,7 +6,7 @@ import { FileText, Layers, Paperclip } from "lucide-react";
 import CourseDetailsForm from "@/components/course/CourseDetailsForm";
 import CourseAttachmentsForm from "@/components/course/CourseAttachmentsForm";
 import CourseChaptersForm from "@/components/course/CourseChaptersForm";
-import { Course } from "@prisma/client";
+import { Chapter, Course, Lesson } from "@prisma/client";
 
 type PageProps = {
   params: Promise<{
@@ -66,13 +66,13 @@ const CourseDetailsPage = async ({ params }: PageProps) => {
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="details">
+        <TabsContent value="details" className="flex-1">
           <CourseDetailsForm course={course} categories={categories} />
         </TabsContent>
-        <TabsContent value="attachments">
+        <TabsContent value="attachments" className="flex-1">
           <CourseAttachmentsForm course={course} />
         </TabsContent>
-        <TabsContent value="chapters">
+        <TabsContent value="chapters" className="flex-1">
           <CourseChaptersForm course={course} />
         </TabsContent>
       </Tabs>
