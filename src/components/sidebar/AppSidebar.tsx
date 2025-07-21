@@ -10,8 +10,8 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { ChartBar, Layout, List, LucideIcon, Search } from "lucide-react";
-import AppSideBarHeader from "./app-sidebar-header";
-import AppSidebarItem from "./app-sidebar-item";
+import AppSideBarHeader from "./AppSidebarHeader";
+import AppSidebarItem from "./AppSidebarItem";
 
 export type SidebarGroup = {
   label: string;
@@ -46,12 +46,12 @@ export function AppSidebar() {
     routes: [
       {
         title: "Courses",
-        url: "/teacher/courses",
+        url: "/courses",
         icon: List,
       },
       {
         title: "Analytics",
-        url: "/teacher/analytics",
+        url: "/analytics",
         icon: ChartBar,
       },
     ],

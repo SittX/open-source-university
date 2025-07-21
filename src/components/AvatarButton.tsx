@@ -16,9 +16,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { createClient } from "@/utils/supabase/client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import LogoutButton from "./logout-button";
 import { useEffect, useState } from "react";
 import { User } from "@supabase/supabase-js";
+import LogoutButton from "./LogoutButton";
 
 const AvatarButton = () => {
   const [user, setUser] = useState<User | null>(null);

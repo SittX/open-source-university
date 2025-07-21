@@ -3,10 +3,10 @@ import React from "react";
 import { redirect } from "next/navigation";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FileText, Layers, Paperclip } from "lucide-react";
-import CourseDetailsForm from "../../_components/CourseDetailsForm";
-import CourseAttachmentsForm from "../../_components/CourseAttachmentsForm";
-import CourseChaptersForm from "../../_components/CourseChaptersForm";
-import { createClient } from "@/utils/supabase/server";
+import CourseDetailsForm from "@/components/course/CourseDetailsForm";
+import CourseAttachmentsForm from "@/components/course/CourseAttachmentsForm";
+import CourseChaptersForm from "@/components/course/CourseChaptersForm";
+import { Course } from "@prisma/client";
 
 type PageProps = {
   params: Promise<{
@@ -18,7 +18,7 @@ const CourseDetailsPage = async ({ params }: PageProps) => {
   const { id } = await params;
 
   if (!id) {
-    return redirect("/teacher/courses");
+    return redirect("/courses");
   }
   // OpenSourceUniversityDev
 
@@ -26,41 +26,23 @@ const CourseDetailsPage = async ({ params }: PageProps) => {
     where: {
       id,
     },
+    include: {
+      attachments: true,
+      chapters: {
+        include: {
+          lessons: true,
+        },
+      },
+    },
   });
+
+  console.log("Course Details Page - Course: ", course);
 
   if (!course) {
-    return redirect("/teacher/courses");
+    return redirect("/courses");
   }
-
-  const attachments = await prisma.attachment.findMany({
-    where: {
-      courseId: course?.id,
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
 
   const categories = await prisma.category.findMany();
-
-  const supabase = await createClient();
-
-  // const { data: fileData, error } = await supabase.storage
-  //   .from("course-attachments")
-  //   .download(`public/${course.id}/images/test.jpg`);
-  // console.log("Downloaded file: ", fileData);
-
-  // {
-  //   const { data, error } = await supabase.auth.getClaims();
-  //   console.log("Claims : ", data);
-  // }
-
-  {
-    const { data, error } = await supabase.storage
-      .from("course-attachments")
-      .list(`${course.id}`);
-    console.log("Listing files: ", data);
-  }
 
   return (
     <div className="flex flex-col gap-4 p-4">
@@ -85,13 +67,13 @@ const CourseDetailsPage = async ({ params }: PageProps) => {
         </TabsList>
 
         <TabsContent value="details">
-          <CourseDetailsForm data={course} categories={categories} />
+          <CourseDetailsForm course={course} categories={categories} />
         </TabsContent>
         <TabsContent value="attachments">
-          <CourseAttachmentsForm course={course} attachments={attachments} />
+          <CourseAttachmentsForm course={course} />
         </TabsContent>
         <TabsContent value="chapters">
-          <CourseChaptersForm />
+          <CourseChaptersForm course={course} />
         </TabsContent>
       </Tabs>
     </div>

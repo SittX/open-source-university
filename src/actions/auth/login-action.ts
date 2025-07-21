@@ -1,8 +1,8 @@
 'use server'
 
+import { LoginSchema } from '@/lib/schema'
 import { createClient } from '@/utils/supabase/server'
 import { AuthError } from '@supabase/supabase-js'
-import { loginSchema } from '@/lib/validations/auth'
 import { z } from 'zod'
 
 export async function login(previousState: AuthError | undefined, formData: FormData): Promise<AuthError | undefined> {
@@ -14,7 +14,7 @@ export async function login(previousState: AuthError | undefined, formData: Form
     }
 
     try {
-        const validatedData = loginSchema.parse(data);
+        const validatedData = LoginSchema.parse(data);
         const { error } = await supabase.auth.signInWithPassword(validatedData);
         return error as AuthError | undefined;
     } catch (error) {

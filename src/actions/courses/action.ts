@@ -1,11 +1,11 @@
 "use server"
 import { prisma } from "@/lib/db"
-import { CourseAttachmentFormSchema, CourseAttachmentUpdateFormSchema, CourseCreateForm, CourseFormSchema } from "@/lib/types"
+import { AttachmentSchema, AttachmentUpdateSchema, CourseInitialFormSchema, CourseDetailsSchema, ChapterSchema } from "@/lib/schema"
 import { z } from "zod"
 import { redirect } from "next/navigation"
 import { createClient } from "@/utils/supabase/server"
 import { getAuthContext } from "@/utils/auth/auth.service"
-import { Attachment, attachmenttype } from '@prisma/client';
+import { attachmenttype } from '@prisma/client';
 import { revalidatePath } from "next/cache"
 
 export async function createCourseAction(
@@ -17,10 +17,10 @@ export async function createCourseAction(
     const userId = user.data.user!.id;
 
     if (userId == "") {
-        redirect("teacher/courses")
+        redirect("/courses")
     }
 
-    const result = CourseCreateForm.safeParse({ title: formData.get("title") })
+    const result = CourseInitialFormSchema.safeParse({ title: formData.get("title") })
 
     if (!result.success) {
         return result.error
@@ -33,19 +33,19 @@ export async function createCourseAction(
         }
     })
 
-    redirect(`/teacher/courses/${course.id}`)
+    redirect(`/courses/${course.id}`)
 }
 
-export async function courseFormAction(courseId: string, formData: FormData) {
+export async function courseDetailsFormAction(courseId: string, formData: FormData) {
     console.log("Form Data", formData)
     const context = await getAuthContext();
     const userId = (await context.getUser()).data.user!.id;
 
     if (!userId) {
-        redirect("/teacher/courses");
+        redirect("/courses");
     }
 
-    const result = CourseFormSchema.safeParse({
+    const result = CourseDetailsSchema.safeParse({
         title: formData.get("title"),
         description: formData.get("description"),
         price: Number(formData.get("price")),
@@ -76,13 +76,11 @@ export async function courseFormAction(courseId: string, formData: FormData) {
         }
     });
 
-    redirect(`/teacher/courses`);
+    redirect(`/courses`);
 }
 
 export async function courseAttachmentsFormAction(formData: FormData) {
-    console.log("Form Data : ", formData)
-    // TODO: Can add zod validation here
-    const result = CourseAttachmentFormSchema.safeParse({
+    const result = AttachmentSchema.safeParse({
         name: formData.get("name"),
         fileSize: formData.get("fileSize"),
         fileType: formData.get("fileType"),
@@ -94,6 +92,7 @@ export async function courseAttachmentsFormAction(formData: FormData) {
         console.error("Error parsing course attachment form : ", result.error)
         return;
     }
+
     const data = await prisma.attachment.create({
         data: {
             courseId: result.data.courseId,
@@ -110,7 +109,7 @@ export async function courseAttachmentsFormAction(formData: FormData) {
 
 export async function courseAttachmentsUpdateFormAction(formData: FormData) {
     console.log("Form Data : ", formData)
-    const result = CourseAttachmentUpdateFormSchema.safeParse({
+    const result = AttachmentUpdateSchema.safeParse({
         name: formData.get("name"),
         description: formData.get("description"),
         attachmentId: formData.get("attachmentId"),
@@ -133,4 +132,35 @@ export async function courseAttachmentsUpdateFormAction(formData: FormData) {
 
     console.log("Successfully updated attachment : ", data)
     // revalidatePath(`/courses/${result.data.courseId}`)
+}
+
+export async function courseChapterFormAction(formData: FormData) {
+    console.log("Course Chapter data : ", formData)
+    const result = ChapterSchema.safeParse({
+        title: formData.get("title"),
+        description: formData.get("description"),
+        order: Number(formData.get("order")),
+        duration: Number(formData.get("duration")),
+        isPublished: Boolean(formData.get("isPublished")),
+        courseId: formData.get("courseId")
+    })
+
+    if (result.error) {
+        console.log("Error while parsing chapter form : ", result.error)
+        return
+    }
+
+    await prisma.chapter.create({
+        data: {
+            title: result.data.title,
+            description: result.data.description,
+            order: result.data.order,
+            isPublished: result.data.isPublished,
+            updatedAt: new Date(),
+            course: {
+                connect: { id: result.data.courseId }
+            }
+        },
+    })
+
 }

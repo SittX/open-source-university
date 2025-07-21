@@ -1,5 +1,6 @@
 "use client";
 
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { FileUpload } from "@/components/ui/file-upload";
 import {
@@ -18,9 +19,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { CourseFormSchema, CourseFormValues } from "@/lib/types";
+import { CourseDetailsSchema } from "@/lib/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Category } from "@prisma/client";
+import { Category, Course } from "@prisma/client";
 import {
   AlertCircle,
   Currency,
@@ -34,34 +35,26 @@ import {
 } from "lucide-react";
 import React, { useActionState } from "react";
 import { useForm } from "react-hook-form";
-import { courseFormAction } from "../../../../../../actions/courses/action";
+import { courseDetailsFormAction } from "../../actions/courses/action";
 import { redirect } from "next/navigation";
 import Image from "next/image";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Textarea } from "@/components/ui/textarea";
 
-type CourseFormProps = {
-  data: {
-    id: string;
-    title: string;
-    description: string | null;
-    price: number | null;
-    imageUrl: string | null;
-    categoryId: string | null;
-  };
-
+type DetailsFormProps = {
+  course: Course;
   categories: Category[];
 };
 
-const CourseDetailsForm = ({ data, categories }: CourseFormProps) => {
+const CourseDetailsForm = ({ course: data, categories }: DetailsFormProps) => {
   const [courseId, action, isLoading] = useActionState(
-    courseFormAction,
+    courseDetailsFormAction,
     data.id
   );
 
-  const form = useForm<CourseFormValues>({
-    resolver: zodResolver(CourseFormSchema),
+  const form = useForm<z.infer<typeof CourseDetailsSchema>>({
+    resolver: zodResolver(CourseDetailsSchema),
     defaultValues: {
       title: data.title,
       description: data.description || "",
@@ -303,7 +296,7 @@ const CourseDetailsForm = ({ data, categories }: CourseFormProps) => {
         <div className="flex items-center justify-between">
           <Button
             variant="outline"
-            onClick={() => redirect(`/teacher/courses`)}
+            onClick={() => redirect(`/courses`)}
             disabled={isLoading}
           >
             Cancel

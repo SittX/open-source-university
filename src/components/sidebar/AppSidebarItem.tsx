@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import React from "react";
-import { SidebarItem } from "./app-sidebar";
+import { SidebarItem } from "./AppSidebar";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { SidebarMenuButton } from "@/components/ui/sidebar";

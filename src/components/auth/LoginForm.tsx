@@ -20,12 +20,12 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { AuthError } from "@supabase/supabase-js";
-import { loginSchema } from "@/lib/validations/auth";
 import { login } from "@/actions/auth/login-action";
-import OAuthButton from "./oauth-button";
+import OAuthButton from "./OAuthButton";
 import { Form } from "@/components/ui/form";
+import { LoginSchema } from "@/lib/schema";
 
-type LoginFormValues = z.infer<typeof loginSchema>;
+type LoginFormValues = z.infer<typeof LoginSchema>;
 
 export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -36,7 +36,7 @@ export default function LoginForm() {
   >(login, undefined);
 
   const form = useForm<LoginFormValues>({
-    resolver: zodResolver(loginSchema),
+    resolver: zodResolver(LoginSchema),
     defaultValues: {
       email: "",
       password: "",

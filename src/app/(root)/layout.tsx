@@ -1,8 +1,8 @@
 import { SidebarProvider } from "@/components/ui/sidebar";
 import React from "react";
-import { AppSidebar } from "./_components/sidebar/app-sidebar";
-import Navbar from "./_components/navbar";
-import AvatarButton from "./_components/avatar-button";
+import { AppSidebar } from "../../components/sidebar/AppSidebar";
+import AvatarButton from "../../components/AvatarButton";
+import Navbar from "@/components/Navbar";
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   return (

@@ -8,46 +8,6 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-model Course {
-  id          String       @id @default(cuid())
-  title       String
-  description String? 
-  imageUrl    String? @map("image_url")
-  price       Float?
-  isPublished Boolean      @default(false) @map("is_published")
-  createdAt   DateTime     @default(now()) @map("created_at")
-  createdBy   String @map("created_by")
-  updatedAt   DateTime     @updatedAt @map("updated_at")
-  categoryId  String? @map("category_id")
-  attachments Attachment[]
-  category    Category?    @relation(fields: [categoryId], references: [id])
-}
-
-model Category {
-  id      String   @id @default(cuid())
-  name    String   @unique
-  courses Course[]
-}
-
-model Attachment {
-  id       String @id @default(cuid())
-  name     String
-  description String?
-  type attachmenttype 
-  url      String
-  courseId String @map("course_id")
-  fileSize Int @map("file_size")
-  course   Course @relation(fields: [courseId], references: [id])
-  createdAt DateTime @default(now())
-}
-
-enum attachmenttype{
-  VIDEO
-  POWERPOINT
-  PDF
-  IMAGE
-}
-
 model UserRoles {
   id      BigInt  @id @default(autoincrement())
   user_id String?
@@ -60,4 +20,80 @@ enum approle {
   ADMIN
   USER
   TEACHER
+}
+
+model Course {
+  id          String       @id @default(cuid())
+  title       String
+  description String?
+  imageUrl    String?      @map("image_url")
+  price       Float?
+  isPublished Boolean      @default(false) @map("is_published")
+  createdAt   DateTime     @default(now()) @map("created_at")
+  createdBy   String       @map("created_by")
+  updatedAt   DateTime     @updatedAt @map("updated_at")
+  categoryId  String?      @map("category_id")
+  attachments Attachment[]
+  chapters    Chapter[]
+  category    Category?    @relation(fields: [categoryId], references: [id])
+}
+
+model Category {
+  id      String   @id @default(cuid())
+  name    String   @unique
+  courses Course[]
+}
+
+model Attachment {
+  id          String         @id @default(cuid())
+  name        String
+  description String?
+  type        attachmenttype
+  url         String
+  fileSize    Int            @map("file_size")
+  courseId    String         @map("course_id")
+  course      Course         @relation(fields: [courseId], references: [id])
+  createdAt   DateTime       @default(now())
+}
+
+model Chapter {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  order       Int
+  duration    Int?
+  isPublished Boolean @default(false) @map("is_published")
+  courseId    String   @map("course_id")
+  course      Course   @relation(fields: [courseId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime
+  lessons     Lesson[]
+}
+
+model Lesson {
+  id          String     @id @default(cuid())
+  title       String
+  description String?
+  order       Int
+  duration    Int?
+  contentUrl  String?    @map("content_url")
+  isPublished Boolean    @default(false) @map("is_published")
+  type        LessonType
+  chapterId   String     @map("chapter_id")
+  chapter     Chapter    @relation(fields: [chapterId], references: [id])
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime
+}
+
+enum LessonType {
+  QUIZ
+  VIDEO
+  DOCUMENT
+}
+
+enum attachmenttype {
+  VIDEO
+  POWERPOINT
+  PDF
+  IMAGE
 }

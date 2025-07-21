@@ -11,7 +11,7 @@ type CourseCardProps = {
 
 const CourseCard = ({ course }: CourseCardProps) => {
   const onCardClick = () => {
-    redirect(`/teacher/courses/${course.id}`);
+    redirect(`/courses/${course.id}`);
   };
   return (
     <motion.div

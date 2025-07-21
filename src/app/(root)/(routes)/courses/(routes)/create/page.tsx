@@ -11,7 +11,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { CourseCreateForm, TCourseCreateForm } from "@/lib/types";
+import { CourseInitialFormSchema, TCourseCreateForm } from "@/lib/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import React, { useActionState } from "react";
@@ -22,7 +22,7 @@ const CreateCoursePage = () => {
   console.log(error);
 
   const form = useForm<TCourseCreateForm>({
-    resolver: zodResolver(CourseCreateForm),
+    resolver: zodResolver(CourseInitialFormSchema),
     defaultValues: {
       title: "",
     },
@@ -30,7 +30,7 @@ const CreateCoursePage = () => {
 
   return (
     <div className="max-w-2xl mx-auto">
-      <Link href={"/teacher/courses"}>
+      <Link href={"/courses"}>
         <Button>Go back to Course Page</Button>
       </Link>
 
@@ -59,7 +59,7 @@ const CreateCoursePage = () => {
           />
 
           <div className="flex items-center gap-x-2">
-            <Link href={"/teachers/courses"}>
+            <Link href={"s/courses"}>
               <Button variant={"ghost"} disabled={isLoading}>
                 Cancel
               </Button>

@@ -5,7 +5,7 @@ import React from "react";
 import { SquarePlus } from "lucide-react";
 import { getAuthContext } from "@/utils/auth/auth.service";
 import { prisma } from "@/lib/db";
-import CourseCard from "./_components/CourseCard";
+import CourseCard from "@/components/course/CourseCard";
 
 const CoursesPage = async () => {
   const context = await getAuthContext();
@@ -23,7 +23,7 @@ const CoursesPage = async () => {
     <div className="p-4">
       <div className="flex justify-between">
         <h2 className="text-2xl">My Courses</h2>
-        <Link href={"/teacher/courses/create"}>
+        <Link href={"/courses/create"}>
           <Button>
             <SquarePlus />
             <span>Create New Course</span>

@@ -8,19 +8,17 @@ import { useState } from "react";
 import { File, Upload } from "lucide-react";
 import { courseAttachmentsFormAction } from "@/actions/courses/action";
 
+type CourseWithAttachments = Course & { attachments: Attachment[] };
+
 type CourseAttachmentProps = {
-  course: Course;
-  attachments: Attachment[];
+  course: CourseWithAttachments;
 };
 
-const CourseAttachmentsForm = ({
-  course,
-  attachments,
-}: CourseAttachmentProps) => {
-  const [courses, setCourses] = useState<Attachment[]>([...attachments]);
+const CourseAttachmentsForm = ({ course: course }: CourseAttachmentProps) => {
+  const [courses, setCourses] = useState<Attachment[]>([...course.attachments]);
 
   console.log("Course ", course);
-  console.log("Attachment ", attachments);
+  console.log("Attachment ", course.attachments);
   return (
     <div className="flex flex-col gap-5">
       <Card>
@@ -67,8 +65,8 @@ const CourseAttachmentsForm = ({
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 gap-4">
-            {attachments && attachments.length > 0 ? (
-              attachments.map((attachment, index) => [
+            {course.attachments && course.attachments.length > 0 ? (
+              course.attachments.map((attachment, index) => [
                 <CourseAttachmentCard data={attachment} key={index} />,
               ])
             ) : (
