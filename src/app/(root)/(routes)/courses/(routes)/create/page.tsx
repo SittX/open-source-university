@@ -11,17 +11,17 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { CourseInitialFormSchema, TCourseCreateForm } from "@/lib/schema";
+import { CourseInitialFormSchema } from "@/lib/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import React, { useActionState } from "react";
 import { useForm } from "react-hook-form";
+import { z } from "zod";
 
 const CreateCoursePage = () => {
   const [error, action, isLoading] = useActionState(createCourseAction, null);
-  console.log(error);
 
-  const form = useForm<TCourseCreateForm>({
+  const form = useForm<z.infer<typeof CourseInitialFormSchema>>({
     resolver: zodResolver(CourseInitialFormSchema),
     defaultValues: {
       title: "",
@@ -29,19 +29,20 @@ const CreateCoursePage = () => {
   });
 
   return (
-    <div className="max-w-2xl mx-auto">
-      <Link href={"/courses"}>
-        <Button>Go back to Course Page</Button>
-      </Link>
-
+    <div className="h-full flex flex-col justify-center items-center">
       <Form {...form}>
-        <form className="space-y-8 mt-5" action={action}>
+        <form
+          action={action}
+          className="space-y-5 border-black border-1 p-5 rounded-md"
+        >
           <FormField
             control={form.control}
             name="title"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Course Title</FormLabel>
+                <FormLabel>
+                  <span className="text-2xl font-semibold">Course Title</span>
+                </FormLabel>
                 <FormControl>
                   <Input
                     disabled={isLoading}
@@ -58,9 +59,9 @@ const CreateCoursePage = () => {
             )}
           />
 
-          <div className="flex items-center gap-x-2">
-            <Link href={"s/courses"}>
-              <Button variant={"ghost"} disabled={isLoading}>
+          <div className="space-y-3 space-x-4">
+            <Link href={"/"}>
+              <Button variant={"outline"} disabled={isLoading}>
                 Cancel
               </Button>
             </Link>

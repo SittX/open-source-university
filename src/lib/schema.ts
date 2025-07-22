@@ -53,7 +53,7 @@ export const ChapterSchema = z.object({
     order: z.number(),
     duration: z.number(),
     isPublished: z.boolean(),
-    courseId: z.string(),
+    courseId: z.string().nonempty(),
 })
 
 export const LessonSchema = z.object({

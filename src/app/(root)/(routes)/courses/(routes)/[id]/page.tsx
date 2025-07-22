@@ -36,8 +36,6 @@ const CourseDetailsPage = async ({ params }: PageProps) => {
     },
   });
 
-  console.log("Course Details Page - Course: ", course);
-
   if (!course) {
     return redirect("/courses");
   }
@@ -46,7 +44,7 @@ const CourseDetailsPage = async ({ params }: PageProps) => {
 
   return (
     <div className="flex flex-col gap-4 p-4">
-      <h1 className="text-2xl font-medium">Course Setup</h1>
+      <h1 className="text-xl font-semibold">Course Setup</h1>
       <Tabs className="w-full" defaultValue="details">
         <TabsList className="grid w-full grid-cols-3 mb-6">
           <TabsTrigger
@@ -73,7 +71,15 @@ const CourseDetailsPage = async ({ params }: PageProps) => {
           <CourseAttachmentsForm course={course} />
         </TabsContent>
         <TabsContent value="chapters" className="flex-1">
-          <CourseChaptersForm course={course} />
+          <CourseChaptersForm
+            course={{
+              ...course,
+              chapters: course.chapters.map((chapter) => ({
+                ...chapter,
+                isExpanded: false,
+              })),
+            }}
+          />
         </TabsContent>
       </Tabs>
     </div>

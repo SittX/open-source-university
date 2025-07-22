@@ -43,7 +43,6 @@ async function uploadFile(
       .from(bucket)
       .getPublicUrl(`${filePath}/${fileName}`);
     if (onUploadComplete && publicUrlData?.publicUrl) {
-      console.log("Uploading file complete");
       toast.success("Uploading file complete!");
       onUploadComplete({ ...uploadFile, publicUrl: publicUrlData.publicUrl });
     }
@@ -180,7 +179,7 @@ export function FileUpload({
         mergedConfig.path,
         onUploadComplete
       );
-      console.log("Uploaded File : ", file);
+
       setFiles(
         files.filter((f) => {
           f.id !== file.id;
@@ -208,7 +207,6 @@ export function FileUpload({
     (e: React.DragEvent) => {
       e.preventDefault();
       setIsDragOver(false);
-      console.log("Handle Drop callback is invoked");
 
       const droppedFiles = e.dataTransfer.files;
       if (droppedFiles.length > 0) {

@@ -34,7 +34,7 @@ async function main() {
         })
     }
 
-    console.log('Categories seeded successfully')
+
 }
 
 main()

@@ -17,8 +17,6 @@ type CourseAttachmentProps = {
 const CourseAttachmentsForm = ({ course: course }: CourseAttachmentProps) => {
   const [courses, setCourses] = useState<Attachment[]>([...course.attachments]);
 
-  console.log("Course ", course);
-  console.log("Attachment ", course.attachments);
   return (
     <div className="space-y-5">
       <Card>
@@ -40,7 +38,6 @@ const CourseAttachmentsForm = ({ course: course }: CourseAttachmentProps) => {
               acceptedFileTypes: ["image/*"],
             }}
             onUploadComplete={(file) => {
-              console.log("Uploaded File: ", file);
               toast.success("Successful upload of attachment file");
               // Save to the database
               const formData = new FormData();

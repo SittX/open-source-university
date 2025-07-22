@@ -37,12 +37,12 @@ export async function createCourseAction(
 }
 
 export async function courseDetailsFormAction(prevState: string, formData: FormData) {
-    console.log("Form Data", formData)
+
     const context = await getAuthContext();
     const userId = (await context.getUser()).data.user!.id;
 
     const courseId = String(formData.get("courseId")?.valueOf())
-    console.log("Course Id: ", courseId);
+
 
     if (!userId) {
         redirect("/courses");
@@ -56,14 +56,14 @@ export async function courseDetailsFormAction(prevState: string, formData: FormD
         categoryId: formData.get("categoryId")
     });
 
-    console.log("Result", result)
+
 
     if (!result.success) {
         console.error(result.error)
         return result.error.message;
     }
 
-    console.log("Saving object : ", result)
+
 
     await prisma.course.update({
         where: {
@@ -106,12 +106,12 @@ export async function courseAttachmentsFormAction(formData: FormData) {
         }
     })
 
-    console.log("Successfully saved attachment : ", data)
+
     revalidatePath(`/courses/${result.data.courseId}`)
 }
 
 export async function courseAttachmentsUpdateFormAction(formData: FormData) {
-    console.log("Form Data : ", formData)
+
     const result = AttachmentUpdateSchema.safeParse({
         name: formData.get("name"),
         description: formData.get("description"),
@@ -133,12 +133,13 @@ export async function courseAttachmentsUpdateFormAction(formData: FormData) {
         }
     })
 
-    console.log("Successfully updated attachment : ", data)
+
     // revalidatePath(`/courses/${result.data.courseId}`)
 }
 
 export async function courseChapterFormAction(formData: FormData) {
-    console.log("Course Chapter data : ", formData)
+
+
     const result = ChapterSchema.safeParse({
         title: formData.get("title"),
         description: formData.get("description"),
@@ -149,27 +150,35 @@ export async function courseChapterFormAction(formData: FormData) {
     })
 
     if (result.error) {
-        console.log("Error while parsing chapter form : ", result.error)
+
         return
     }
 
-    await prisma.chapter.create({
-        data: {
-            title: result.data.title,
-            description: result.data.description,
-            order: result.data.order,
-            isPublished: result.data.isPublished,
-            updatedAt: new Date(),
-            course: {
-                connect: { id: result.data.courseId }
-            }
-        },
-    })
+    try {
+
+
+
+        await prisma.chapter.create({
+            data: {
+                title: result.data.title,
+                description: result.data.description,
+                order: result.data.order,
+                isPublished: result.data.isPublished,
+                updatedAt: new Date(),
+                course: {
+                    connect: { id: String(formData.get("courseId")?.valueOf()) }
+                }
+            },
+        })
+    } catch (error) {
+        console.error("Error during chapter creation : ", error)
+    }
+
 
 }
 
 export async function courseChapterLessonFormAction(formData: FormData) {
-    console.log("Form Data for lesson : ", formData)
+
     const result = LessonSchema.safeParse({
         title: formData.get("title"),
         description: formData.get("description"),
@@ -186,7 +195,7 @@ export async function courseChapterLessonFormAction(formData: FormData) {
         return
     }
 
-    console.log("Chapter Id in action : ", result.data.chapterId)
+
 
     await prisma.lesson.create({
         data: {

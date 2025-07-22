@@ -37,7 +37,7 @@ export async function updateSession(request: NextRequest) {
         data: { user },
     } = await supabase.auth.getUser()
 
-    // console.log("user in the middleware", user)
+    // 
 
     if (
         !user &&

@@ -30,39 +30,28 @@ const ChapterForm = ({ courseId }: ChapterFormProps) => {
       order: 0,
       duration: 0,
       isPublished: false,
-      courseId: "",
+      courseId: courseId,
     },
   });
-
-  const handleCancel = () => {
-    chapterForm.reset();
-  };
 
   return (
     <Form {...chapterForm}>
       <form
         className="space-y-4"
         onSubmit={chapterForm.handleSubmit(async (data) => {
-          console.log("Chapter Form Data", data);
           const formData = new FormData();
-
-          // Ensure courseId is set from props if not present
-          // Convert payload to FormData
           Object.entries(data).forEach(([key, value]) => {
-            formData.append(key, String(value));
+            if (key !== "courseId") {
+              formData.append(key, String(value));
+            } else {
+              formData.append("courseId", courseId); // Always from prop
+            }
           });
-
-          // formData.append("title", data.title);
-          // formData.append("description", data.description);
-          // formData.append("order", data.order.toString());
-          // formData.append("duration", data.duration.toString());
-          // formData.append("isPublished", data.isPublished.toString());
-          formData.append("courseId", courseId);
-
           await courseChapterFormAction(formData);
           chapterForm.reset();
         })}
       >
+        <Input type="hidden" name="courseId" value={courseId} />
         <FormField
           control={chapterForm.control}
           name="title"
@@ -101,7 +90,7 @@ const ChapterForm = ({ courseId }: ChapterFormProps) => {
           }}
         />
 
-        <div className="flex items-center justify-end-safe">
+        <div className="flex items-center justify-end-safe space-x-5">
           <DialogClose asChild>
             <Button variant={"outline"}>Cancel</Button>
           </DialogClose>

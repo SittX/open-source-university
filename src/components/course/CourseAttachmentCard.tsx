@@ -45,7 +45,6 @@ type CourseAttachmentProps = {
 };
 
 const CourseAttachmentCard = ({ attachment }: CourseAttachmentProps) => {
-  console.log("Course Data", attachment);
   const form = useForm({
     defaultValues: {
       name: attachment.name,
@@ -86,7 +85,7 @@ const CourseAttachmentCard = ({ attachment }: CourseAttachmentProps) => {
           </div>
         </div>
 
-        <div className="flex items-center gap-2 transition-opacity opacity-0 hover:opacity-100">
+        <div className="flex items-center gap-2 transition-opacity opacity-40 hover:opacity-100">
           <Button
             variant="ghost"
             size="sm"

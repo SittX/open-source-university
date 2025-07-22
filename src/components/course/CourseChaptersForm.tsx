@@ -54,7 +54,6 @@ const CourseChaptersForm = ({ course }: ChapterFormProps) => {
   );
 
   const chapterDragEndEvent = (event: DragEndEvent) => {
-    console.log("Event : ", event);
     const { active, over } = event;
     if (!over || active.id === over.id) return;
 
@@ -67,8 +66,10 @@ const CourseChaptersForm = ({ course }: ChapterFormProps) => {
   return (
     <Card className="h-full">
       <CardHeader>
-        <h2 className="text-2xl font-bold">Course Chapters Setup</h2>
-        <p>Organize your course content into chapters and lessons</p>
+        <h2 className="text-xl font-semibold">Course Chapters Setup</h2>
+        <p className="text-md">
+          Organize your course content into chapters and lessons
+        </p>
       </CardHeader>
       <CardContent className="space-y-4">
         <Dialog>
@@ -80,7 +81,7 @@ const CourseChaptersForm = ({ course }: ChapterFormProps) => {
           </DialogTrigger>
           <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>
-              <DialogTitle>Add Chapter</DialogTitle>
+              <DialogTitle>Chapter Details</DialogTitle>
               <DialogDescription>
                 Add a new chapter to your course.
               </DialogDescription>
@@ -110,8 +111,6 @@ const CourseChaptersForm = ({ course }: ChapterFormProps) => {
                 onExpended={() => {}}
                 onToggleChapterPublish={() => {}}
                 onToggleExpand={(id: string) => {
-                  console.log("Toggle expand chapter : ", id);
-                  console.log("Chapters : ", chapters);
                   setChapters((chapters) =>
                     chapters.map((chapter) =>
                       chapter.id === id
