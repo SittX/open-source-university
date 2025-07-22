@@ -34,7 +34,7 @@ const CoursesPage = async () => {
         {courses.length === 0 ? (
           <div>No courses</div>
         ) : (
-          courses.map((course) => (
+          courses.map((course, index) => (
             <CourseCard course={course} key={course.id} />
           ))
         )}

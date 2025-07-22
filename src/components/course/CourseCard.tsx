@@ -13,6 +13,7 @@ const CourseCard = ({ course }: CourseCardProps) => {
   const onCardClick = () => {
     redirect(`/courses/${course.id}`);
   };
+
   return (
     <motion.div
       className={`rounded-sm shadow-md p-4 h-full`}
@@ -26,6 +27,9 @@ const CourseCard = ({ course }: CourseCardProps) => {
         transition: { duration: 0.2 },
       }}
       onClick={onCardClick}
+      role="button"
+      tabIndex={0}
+      aria-label={`View details for ${course.title}`}
     >
       <div className="w-full">
         <Image

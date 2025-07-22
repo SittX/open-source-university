@@ -9,9 +9,23 @@ import {
   SidebarMenu,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { ChartBar, Layout, List, LucideIcon, Search } from "lucide-react";
+import {
+  Bell,
+  BookOpen,
+  ChartBar,
+  Home,
+  Info,
+  Layout,
+  List,
+  LucideIcon,
+  NotebookPen,
+  Search,
+  Settings,
+  User,
+} from "lucide-react";
 import AppSideBarHeader from "./AppSidebarHeader";
 import AppSidebarItem from "./AppSidebarItem";
+import { info } from "console";
 
 export type SidebarGroup = {
   label: string;
@@ -25,41 +39,61 @@ export type SidebarItem = {
 };
 
 export function AppSidebar() {
-  const studentSidebarGroup: SidebarGroup = {
+  const applicationSidebarGroup: SidebarGroup = {
     label: "Application",
     routes: [
       {
         title: "Dashboard",
         url: "/",
-        icon: Layout,
+        icon: Home,
       },
       {
         title: "Browse",
         url: "/search",
         icon: Search,
       },
+      {
+        title: "My Courses",
+        url: "/courses",
+        icon: BookOpen,
+      },
+      {
+        title: "Assignments",
+        url: "/assignments",
+        icon: NotebookPen,
+      },
     ],
   };
 
-  const teacherSidebarGroup: SidebarGroup = {
-    label: "Teacher dashboard",
+  const accountSidebarGroup: SidebarGroup = {
+    label: "Account",
     routes: [
       {
-        title: "Courses",
-        url: "/courses",
-        icon: List,
+        title: "Notifications",
+        url: "/notifications",
+        icon: Bell,
       },
       {
-        title: "Analytics",
-        url: "/analytics",
-        icon: ChartBar,
+        title: "Profile",
+        url: "/profile",
+        icon: User,
+      },
+      {
+        title: "Settings",
+        url: "/settings",
+        icon: Settings,
+      },
+      {
+        title: "Help",
+        url: "/help",
+        icon: Info,
       },
     ],
   };
 
   const sidebarGroups: SidebarGroup[] = [
-    studentSidebarGroup,
-    teacherSidebarGroup,
+    applicationSidebarGroup,
+    accountSidebarGroup,
   ];
 
   return (
