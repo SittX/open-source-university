@@ -41,16 +41,16 @@ import React from "react";
 import { useForm } from "react-hook-form";
 
 type CourseAttachmentProps = {
-  data: Attachment;
+  attachment: Attachment;
 };
 
-const CourseAttachmentCard = ({ data }: CourseAttachmentProps) => {
-  console.log("Course Data", data);
+const CourseAttachmentCard = ({ attachment }: CourseAttachmentProps) => {
+  console.log("Course Data", attachment);
   const form = useForm({
     defaultValues: {
-      name: data.name,
-      description: data.description ?? "",
-      attachmentId: data.id,
+      name: attachment.name,
+      description: attachment.description ?? "",
+      attachmentId: attachment.id,
     },
   });
 
@@ -58,8 +58,8 @@ const CourseAttachmentCard = ({ data }: CourseAttachmentProps) => {
     <Card>
       <CardContent className="flex items-center gap-3">
         <div className="flex-shrink-0">
-          <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-            <FileIcon className="w-5 h-5 text-blue-600" />
+          <div className="w-10 h-10 bg-black rounded-md flex items-center justify-center">
+            <FileIcon className="w-5 h-5 text-white" />
           </div>
         </div>
 
@@ -67,26 +67,26 @@ const CourseAttachmentCard = ({ data }: CourseAttachmentProps) => {
           <div className="flex items-start justify-between">
             <div className="min-w-0 flex-1">
               <h4 className="text-sm font-semibold text-gray-900 truncate">
-                {data.name}
+                {attachment.name}
               </h4>
               <p className="text-xs text-gray-500 mt-1 line-clamp-2">
-                {data.description || "No description"}
+                {attachment.description || "No description"}
               </p>
               <div className="flex items-center gap-4 mt-2 text-xs text-gray-400">
                 <span className="flex items-center gap-1">
                   <HardDrive className="w-3 h-3" />
-                  {formatFileSize(data.fileSize)}
+                  {formatFileSize(attachment.fileSize)}
                 </span>
                 <span className="flex items-center gap-1">
                   <Calendar className="w-3 h-3" />
-                  {data.createdAt.toString()}
+                  {attachment.createdAt.toString()}
                 </span>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="flex items-center gap-2 transition-opacity">
+        <div className="flex items-center gap-2 transition-opacity opacity-0 hover:opacity-100">
           <Button
             variant="ghost"
             size="sm"

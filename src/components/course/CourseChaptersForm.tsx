@@ -65,7 +65,7 @@ const CourseChaptersForm = ({ course }: ChapterFormProps) => {
   };
 
   return (
-    <Card className="flex-1">
+    <Card className="h-full">
       <CardHeader>
         <h2 className="text-2xl font-bold">Course Chapters Setup</h2>
         <p>Organize your course content into chapters and lessons</p>

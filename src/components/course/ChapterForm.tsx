@@ -15,6 +15,7 @@ import { Textarea } from "../ui/textarea";
 import { courseChapterFormAction } from "@/actions/courses/action";
 import { Button } from "../ui/button";
 import { Chapter } from "@prisma/client";
+import { DialogClose } from "@radix-ui/react-dialog";
 
 type ChapterFormProps = {
   courseId: string;
@@ -33,19 +34,29 @@ const ChapterForm = ({ courseId }: ChapterFormProps) => {
     },
   });
 
+  const handleCancel = () => {
+    chapterForm.reset();
+  };
+
   return (
     <Form {...chapterForm}>
       <form
+        className="space-y-4"
         onSubmit={chapterForm.handleSubmit(async (data) => {
           console.log("Chapter Form Data", data);
+          const formData = new FormData();
+
           // Ensure courseId is set from props if not present
           // Convert payload to FormData
-          const formData = new FormData();
-          formData.append("title", data.title);
-          formData.append("description", data.description);
-          formData.append("order", data.order.toString());
-          formData.append("duration", data.duration.toString());
-          formData.append("isPublished", data.isPublished.toString());
+          Object.entries(data).forEach(([key, value]) => {
+            formData.append(key, String(value));
+          });
+
+          // formData.append("title", data.title);
+          // formData.append("description", data.description);
+          // formData.append("order", data.order.toString());
+          // formData.append("duration", data.duration.toString());
+          // formData.append("isPublished", data.isPublished.toString());
           formData.append("courseId", courseId);
 
           await courseChapterFormAction(formData);
@@ -58,7 +69,7 @@ const ChapterForm = ({ courseId }: ChapterFormProps) => {
           render={({ field }) => {
             return (
               <FormItem>
-                <FormLabel className="text-md">Title</FormLabel>
+                <FormLabel className="text-md font-semibold">Title</FormLabel>
 
                 <FormControl>
                   <Input {...field} />
@@ -76,7 +87,9 @@ const ChapterForm = ({ courseId }: ChapterFormProps) => {
           render={({ field }) => {
             return (
               <FormItem>
-                <FormLabel className="text-md">Description</FormLabel>
+                <FormLabel className="text-md font-semibold">
+                  Description
+                </FormLabel>
 
                 <FormControl>
                   <Textarea {...field} />
@@ -87,9 +100,14 @@ const ChapterForm = ({ courseId }: ChapterFormProps) => {
             );
           }}
         />
-        <Button type="submit" className="mt-4">
-          Save Chapter
-        </Button>
+
+        <div className="flex items-center justify-end-safe">
+          <DialogClose asChild>
+            <Button variant={"outline"}>Cancel</Button>
+          </DialogClose>
+
+          <Button type="submit">Save</Button>
+        </div>
       </form>
     </Form>
   );

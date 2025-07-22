@@ -48,9 +48,9 @@ type DetailsFormProps = {
 };
 
 const CourseDetailsForm = ({ course: data, categories }: DetailsFormProps) => {
-  const [courseId, action, isLoading] = useActionState(
+  const [error, action, isLoading] = useActionState(
     courseDetailsFormAction,
-    data.id
+    ""
   );
 
   const form = useForm<z.infer<typeof CourseDetailsSchema>>({
@@ -77,7 +77,7 @@ const CourseDetailsForm = ({ course: data, categories }: DetailsFormProps) => {
 
   return (
     <Form {...form}>
-      <form action={action} className="flex flex-col gap-4">
+      <form action={action} className="space-y-4">
         {/* Required fields indicator */}
         {progressPercentage != 100 ? (
           <Card className="border-1 shadow-sm bg-white/70 backdrop-blur-sm p-0">
@@ -100,12 +100,14 @@ const CourseDetailsForm = ({ course: data, categories }: DetailsFormProps) => {
           ""
         )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <Card>
             <CardHeader>
-              <CardTitle>Basic Information</CardTitle>
+              <CardTitle className="text-lg">Basic Information</CardTitle>
             </CardHeader>
-            <CardContent className="flex flex-col gap-5">
+            <CardContent className="space-y-5">
+              <input type="hidden" name="courseId" value={data.id} />
+
               <input
                 type="hidden"
                 name="categoryId"
@@ -123,8 +125,7 @@ const CourseDetailsForm = ({ course: data, categories }: DetailsFormProps) => {
                 render={({ field }) => {
                   return (
                     <FormItem>
-                      <FormLabel className="text-md">
-                        <File className="w-4 h-4" />
+                      <FormLabel className="text-md font-semibold">
                         Course Title
                       </FormLabel>
 
@@ -138,15 +139,15 @@ const CourseDetailsForm = ({ course: data, categories }: DetailsFormProps) => {
                 }}
               />
 
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
                 <FormField
                   control={form.control}
                   name="price"
                   render={({ field }) => {
                     return (
                       <FormItem>
-                        <FormLabel className="text-md">
-                          <Currency className="w-4 h-4" /> Course Price
+                        <FormLabel className="text-md font-semibold">
+                          Course Price
                         </FormLabel>
                         <FormControl>
                           <Input
@@ -169,8 +170,8 @@ const CourseDetailsForm = ({ course: data, categories }: DetailsFormProps) => {
                   render={({ field }) => {
                     return (
                       <FormItem>
-                        <FormLabel className="text-md">
-                          <Tag className="w-4 h-4" /> Course Category
+                        <FormLabel className="text-md font-semibold">
+                          Course Category
                         </FormLabel>
 
                         <Select
@@ -179,7 +180,7 @@ const CourseDetailsForm = ({ course: data, categories }: DetailsFormProps) => {
                           disabled={isLoading}
                         >
                           <FormControl>
-                            <SelectTrigger className="w-full">
+                            <SelectTrigger className="w-full min-w-0 truncate">
                               <SelectValue placeholder="Select a category" />
                             </SelectTrigger>
                           </FormControl>
@@ -206,8 +207,7 @@ const CourseDetailsForm = ({ course: data, categories }: DetailsFormProps) => {
                 render={({ field }) => {
                   return (
                     <FormItem>
-                      <FormLabel className="text-md">
-                        <Info className="w-4 h-4" />
+                      <FormLabel className="text-md font-semibold">
                         Course Description
                       </FormLabel>
                       <FormControl>
@@ -230,7 +230,7 @@ const CourseDetailsForm = ({ course: data, categories }: DetailsFormProps) => {
             <CardHeader>
               <CardTitle>
                 <div className="flex justify-between items-center">
-                  <span>Course Image</span>
+                  <span className="text-lg">Course Image</span>
                   <div className="flex gap-3">
                     <Button>
                       <Edit />
@@ -301,8 +301,8 @@ const CourseDetailsForm = ({ course: data, categories }: DetailsFormProps) => {
           >
             Cancel
           </Button>
-          <div className="flex gap-3">
-            <Button type="submit" disabled={isLoading} variant="secondary">
+          <div className="flex gap-4">
+            <Button type="submit" disabled={isLoading} variant="outline">
               <Save />
               Save draft
             </Button>

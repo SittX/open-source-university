@@ -36,10 +36,13 @@ export async function createCourseAction(
     redirect(`/courses/${course.id}`)
 }
 
-export async function courseDetailsFormAction(courseId: string, formData: FormData) {
+export async function courseDetailsFormAction(prevState: string, formData: FormData) {
     console.log("Form Data", formData)
     const context = await getAuthContext();
     const userId = (await context.getUser()).data.user!.id;
+
+    const courseId = String(formData.get("courseId")?.valueOf())
+    console.log("Course Id: ", courseId);
 
     if (!userId) {
         redirect("/courses");

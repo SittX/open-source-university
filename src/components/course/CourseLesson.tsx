@@ -76,8 +76,8 @@ const CourseLesson = ({
         >
           <GripVertical className="w-4 h-4 text-gray-400" />
         </div>
-        <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-          <LessonIcon className="w-4 h-4 text-blue-600" />
+        <div className="w-8 h-8 bg-black rounded-md flex items-center justify-center">
+          <LessonIcon className="w-4 h-4 text-white" />
         </div>
       </div>
 

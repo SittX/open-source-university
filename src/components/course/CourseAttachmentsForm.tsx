@@ -20,11 +20,11 @@ const CourseAttachmentsForm = ({ course: course }: CourseAttachmentProps) => {
   console.log("Course ", course);
   console.log("Attachment ", course.attachments);
   return (
-    <div className="flex flex-col gap-5">
+    <div className="space-y-5">
       <Card>
         <CardHeader>
           <CardTitle>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
               <Upload className="w-4 h-4" />
               <span>Upload Attachments</span>
             </div>
@@ -58,19 +58,20 @@ const CourseAttachmentsForm = ({ course: course }: CourseAttachmentProps) => {
       <Card>
         <CardHeader>
           <CardTitle>
-            <span className="flex items-center gap-2">
-              <File className="w-4 h-4" /> Course Attachments ({courses.length})
-            </span>
+            <div className="flex items-center gap-2">
+              <File className="w-4 h-4" />{" "}
+              <span>Course Attachments ({courses.length})</span>
+            </div>
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 gap-4">
+          <div className="space-y-4">
             {course.attachments && course.attachments.length > 0 ? (
               course.attachments.map((attachment, index) => [
-                <CourseAttachmentCard data={attachment} key={index} />,
+                <CourseAttachmentCard attachment={attachment} key={index} />,
               ])
             ) : (
-              <p>No data yet</p>
+              <p>No attachment</p>
             )}
           </div>
         </CardContent>
