@@ -1,0 +1,20 @@
+[
+    {
+        "label": "Application",
+        "routes": [
+            { "title": "Dashboard", "url": "/", "icon": "Home", "allowedRoles": ["student", "teacher", "admin"] },
+            { "title": "Browse", "url": "/search", "icon": "Search", "allowedRoles": ["student", "teacher"] },
+            { "title": "My Courses", "url": "/courses", "icon": "BookOpen", "allowedRoles": ["student", "teacher"] },
+            { "title": "Assignments", "url": "/assignments", "icon": "NotebookPen", "allowedRoles": ["student", "teacher"] }
+        ]
+    },
+    {
+        "label": "Account",
+        "routes": [
+            { "title": "Notifications", "url": "/notifications", "icon": "Bell" },
+            { "title": "Profile", "url": "/profile", "icon": "User" },
+            { "title": "Settings", "url": "/settings", "icon": "Settings" },
+            { "title": "Help", "url": "/help", "icon": "Info" }
+        ]
+    }
+]

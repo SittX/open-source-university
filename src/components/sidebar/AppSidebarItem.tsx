@@ -1,12 +1,18 @@
 "use client";
 import Link from "next/link";
 import React from "react";
-import { SidebarItem } from "./AppSidebar";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { SidebarMenuButton } from "@/components/ui/sidebar";
+import type { LucideIcon } from "lucide-react";
 
-const AppSidebarItem = ({ url, title, icon: Icon }: SidebarItem) => {
+interface AppSidebarItemProps {
+  url: string;
+  title: string;
+  icon: LucideIcon;
+}
+
+const AppSidebarItem = ({ url, title, icon: Icon }: AppSidebarItemProps) => {
   const pathname = usePathname();
 
   const isActive =
@@ -23,7 +29,7 @@ const AppSidebarItem = ({ url, title, icon: Icon }: SidebarItem) => {
           isActive && "text-black bg-gray-300"
         )}
       >
-        <Icon />
+        <Icon className="mr-2" />
         <span>{title}</span>
         <div
           className={cn(
