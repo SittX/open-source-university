@@ -1,5 +1,5 @@
 import { createServerClient } from '@supabase/ssr'
-import { NextResponse, type NextRequest } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 
 export async function updateSession(request: NextRequest) {
     let supabaseResponse = NextResponse.next({
@@ -50,6 +50,11 @@ export async function updateSession(request: NextRequest) {
         url.pathname = '/auth/login'
         return NextResponse.redirect(url)
     }
+
+    const claims = await supabase.auth.getClaims()
+
+    console.log("All Claims : ", claims)
+
 
     // IMPORTANT: You *must* return the supabaseResponse object as it is.
     // If you're creating a new response object with NextResponse.next() make sure to:

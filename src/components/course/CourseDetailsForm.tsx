@@ -275,7 +275,7 @@ const CourseDetailsForm = ({ course: data, categories }: DetailsFormProps) => {
                               acceptedFileTypes: ["image/*"],
                             }}
                             onUploadComplete={(file) => {
-                              
+                              console.log(
                                 "Uploaded File public url : ",
                                 file.publicUrl
                               );
