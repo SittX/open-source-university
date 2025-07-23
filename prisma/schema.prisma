@@ -14,6 +14,7 @@ model UserRoles {
   role    approle
 
   @@unique([user_id, role])
+  @@map("user_roles")
 }
 
 enum approle {
@@ -33,18 +34,20 @@ model Course {
   createdBy   String       @map("created_by")
   updatedAt   DateTime     @updatedAt @map("updated_at")
   categoryId  String?      @map("category_id")
-  attachments Attachment[]
+  attachments CourseAttachment[]
   chapters    Chapter[]
-  category    Category?    @relation(fields: [categoryId], references: [id])
+  category    CourseCategory?    @relation(fields: [categoryId], references: [id])
+  @@map("courses")
 }
 
-model Category {
+model CourseCategory {
   id      String   @id @default(cuid())
   name    String   @unique
   courses Course[]
+  @@map("course_categories")
 }
 
-model Attachment {
+model CourseAttachment {
   id          String         @id @default(cuid())
   name        String
   description String?
@@ -54,6 +57,7 @@ model Attachment {
   courseId    String         @map("course_id")
   course      Course         @relation(fields: [courseId], references: [id])
   createdAt   DateTime       @default(now())
+  @@map("course_attachments")
 }
 
 model Chapter {
@@ -68,6 +72,7 @@ model Chapter {
   createdAt   DateTime @default(now())
   updatedAt   DateTime
   lessons     Lesson[]
+  @@map("chapters")
 }
 
 model Lesson {
@@ -83,6 +88,7 @@ model Lesson {
   chapter     Chapter    @relation(fields: [chapterId], references: [id])
   createdAt   DateTime   @default(now())
   updatedAt   DateTime
+  @@map("lessons")
 }
 
 enum LessonType {

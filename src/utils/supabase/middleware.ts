@@ -53,7 +53,7 @@ export async function updateSession(request: NextRequest) {
 
     const claims = await supabase.auth.getClaims()
 
-    console.log("All Claims : ", claims)
+
 
 
     // IMPORTANT: You *must* return the supabaseResponse object as it is.
