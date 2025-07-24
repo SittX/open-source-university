@@ -262,7 +262,7 @@ const CourseDetailsForm = ({ course: data, categories }: DetailsFormProps) => {
                               alt="course image"
                               width={500}
                               height={500}
-                              className="mx-auto rounded-lg"
+                              className="mx-auto rounded-md"
                             />
                           </div>
                         ) : (

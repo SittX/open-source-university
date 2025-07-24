@@ -50,10 +50,10 @@ const getMonthName = (date: Date): string => {
 // Activity level colors (GitHub-style)
 const LEVEL_COLORS = [
   "bg-gray-200", // Level 0
-  "bg-green-300", // Level 1
+  "bg-green-200", // Level 1
   "bg-green-400", // Level 2
   "bg-green-500", // Level 3
-  "bg-green-600", // Level 4
+  "bg-green-700", // Level 4
 ];
 
 // Main component
@@ -159,7 +159,7 @@ const ActivityChart: React.FC<ActivityChartProps> = ({
   }, []);
 
   return (
-    <div className={`p-6 bg-card rounded-lg border shadow-sm ${className}`}>
+    <div className={`p-6 bg-card rounded-md border shadow-sm ${className}`}>
       <div className="mb-4">
         <h3 className="text-lg font-semibold">{title}</h3>
       </div>
@@ -214,7 +214,7 @@ const ActivityChart: React.FC<ActivityChartProps> = ({
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <div
-                            className={`w-4 h-4 rounded-sm ${LEVEL_COLORS[level]} transition-transform hover:scale-110 hover:z-10 hover:shadow-sm cursor-pointer`}
+                            className={`w-4 h-4 rounded-md ${LEVEL_COLORS[level]} transition-transform hover:scale-110 hover:z-10 hover:shadow-sm cursor-pointer`}
                           />
                         </TooltipTrigger>
                         <TooltipContent>
@@ -235,7 +235,7 @@ const ActivityChart: React.FC<ActivityChartProps> = ({
         <div className="flex items-center gap-2 mt-2">
           <span className="text-xs text-muted-foreground">Less</span>
           {LEVEL_COLORS.map((color, index) => (
-            <div key={index} className={`w-4 h-4 rounded-sm ${color}`} />
+            <div key={index} className={`w-4 h-4 rounded-md ${color}`} />
           ))}
           <span className="text-xs text-muted-foreground">More</span>
         </div>

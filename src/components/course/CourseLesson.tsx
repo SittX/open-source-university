@@ -64,7 +64,7 @@ const CourseLesson = ({
     <div
       ref={setNodeRef}
       style={style}
-      className={`flex items-center gap-4 p-4 border border-gray-200 rounded-lg hover:bg-gray-50/50 transition-colors group ${
+      className={`flex items-center gap-4 p-4 border border-gray-200 rounded-md hover:bg-gray-50/50 transition-colors group ${
         isDragging ? "shadow-lg ring-2 ring-blue-400 bg-white" : ""
       }`}
     >

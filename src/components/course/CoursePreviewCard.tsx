@@ -78,7 +78,7 @@ const CoursePreview = ({ course, variant = "available" }: CourseCardProps) => {
       tabIndex={0}
       aria-label={`View details for ${enhancedCourse.title}`}
     >
-      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-200 h-full flex flex-col">
+      <div className="bg-white rounded-md border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-200 h-full flex flex-col">
         {/* Course Image */}
         <div className="relative">
           <div className="aspect-video relative overflow-hidden">

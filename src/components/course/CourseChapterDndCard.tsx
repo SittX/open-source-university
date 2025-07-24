@@ -90,7 +90,7 @@ const CourseChapterCard = ({
   const handleLessonDragStart = (event: DragStartEvent) => {};
 
   return (
-    <div className="p-6 border border-gray-300 rounded-lg mb-8">
+    <div className="p-6 border border-gray-300 rounded-md mb-8">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4 flex-1">
           <div className="flex items-center gap-2">

@@ -4,6 +4,7 @@ import { AppSidebar } from "../../components/sidebar/AppSidebar";
 import AvatarButton from "../../components/AvatarButton";
 import Navbar from "@/components/Navbar";
 import NotificationButton from "@/components/NotificationButton";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -13,6 +14,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
         <div className="h-[50px] flex justify-between items-center border-b p-4 shadow-sm">
           <Navbar />
           <div className="flex justify-between gap-5 items-center">
+            <ThemeToggle />
             <NotificationButton />
             <AvatarButton />
           </div>

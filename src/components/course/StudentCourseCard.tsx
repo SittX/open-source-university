@@ -91,7 +91,7 @@ const CourseCard = ({ course }: CourseCardProps) => {
         }
       }}
     >
-      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-200 group">
+      <div className="bg-white rounded-md border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-200 group">
         <div className="relative">
           <div className="aspect-video relative overflow-hidden">
             <Image
@@ -108,7 +108,7 @@ const CourseCard = ({ course }: CourseCardProps) => {
                   Completed
                 </Badge>
               ) : (
-                <Badge className="bg-blue-500 hover:bg-blue-500 text-white">
+                <Badge className="bg-gray-600 hover:bg-gray-600 text-white">
                   In Progress
                 </Badge>
               )}
@@ -133,9 +133,9 @@ const CourseCard = ({ course }: CourseCardProps) => {
 
           {courseData.progress !== undefined && !courseData.isCompleted && (
             <div className="mb-4">
-              <div className="flex text-sm text-gray-600 mb-2">
-                <span>{courseData.progress}% completed</span>
-              </div>
+              <span className="text-sm text-gray-600 mb-2">
+                {courseData.progress}% completed
+              </span>
               <Progress value={courseData.progress} className="h-2" />
               {courseData.lastWatched && (
                 <p className="text-xs text-gray-500 mt-2">

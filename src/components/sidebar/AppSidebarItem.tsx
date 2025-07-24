@@ -21,22 +21,20 @@ const AppSidebarItem = ({ url, title, icon: Icon }: AppSidebarItemProps) => {
     pathname.startsWith(`${url}/`);
 
   return (
-    <SidebarMenuButton asChild className="p-0 pl-2 rounded-none">
-      <Link
-        href={url}
-        className={cn(
-          "hover:text-black hover:bg-gray-300 hover:transition-all",
-          isActive && "text-black bg-gray-300"
-        )}
-      >
+    <SidebarMenuButton
+      asChild
+      isActive={isActive}
+      className={cn(
+        "w-full justify-start gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-all duration-200",
+        "hover:bg-accent/50 hover:text-accent-foreground",
+        "focus-visible:bg-accent/50 focus-visible:text-accent-foreground",
+        "data-[active=true]:bg-primary/8 data-[active=true]:text-primary data-[active=true]:font-semibold",
+        "data-[active=true]:shadow-sm data-[active=true]:border data-[active=true]:border-primary/10"
+      )}
+    >
+      <Link href={url}>
         <Icon className="mr-2" />
         <span>{title}</span>
-        <div
-          className={cn(
-            "ml-auto opacity-0 border-r-3 border-gray-500 h-full transition-all",
-            isActive && "opacity-100"
-          )}
-        />
       </Link>
     </SidebarMenuButton>
   );
