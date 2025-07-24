@@ -3,19 +3,21 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FileUpload } from "@/components/ui/file-upload";
 import CourseAttachmentCard from "./CourseAttachmentCard";
 import { toast } from "sonner";
-import { Attachment, Course } from "@prisma/client";
+import { CourseAttachment, Course } from "@prisma/client";
 import { useState } from "react";
 import { File, Upload } from "lucide-react";
 import { courseAttachmentsFormAction } from "@/actions/courses/action";
 
-type CourseWithAttachments = Course & { attachments: Attachment[] };
+type CourseWithAttachments = Course & { attachments: CourseAttachment[] };
 
 type CourseAttachmentProps = {
   course: CourseWithAttachments;
 };
 
 const CourseAttachmentsForm = ({ course: course }: CourseAttachmentProps) => {
-  const [courses, setCourses] = useState<Attachment[]>([...course.attachments]);
+  const [courses, setCourses] = useState<CourseAttachment[]>([
+    ...course.attachments,
+  ]);
 
   return (
     <div className="space-y-5">

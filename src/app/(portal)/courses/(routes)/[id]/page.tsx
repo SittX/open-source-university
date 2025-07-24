@@ -40,7 +40,7 @@ const CourseDetailsPage = async ({ params }: PageProps) => {
     return redirect("/courses");
   }
 
-  const categories = await prisma.category.findMany();
+  const categories = await prisma.courseCategory.findMany();
 
   return (
     <div className="flex flex-col gap-4 p-4">

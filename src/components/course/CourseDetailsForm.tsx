@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/select";
 import { CourseDetailsSchema } from "@/lib/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Category, Course } from "@prisma/client";
+import { CourseCategory, Course } from "@prisma/client";
 import {
   AlertCircle,
   Currency,
@@ -44,7 +44,7 @@ import { Textarea } from "@/components/ui/textarea";
 
 type DetailsFormProps = {
   course: Course;
-  categories: Category[];
+  categories: CourseCategory[];
 };
 
 const CourseDetailsForm = ({ course: data, categories }: DetailsFormProps) => {
@@ -266,22 +266,23 @@ const CourseDetailsForm = ({ course: data, categories }: DetailsFormProps) => {
                             />
                           </div>
                         ) : (
-                          <FileUpload
-                            config={{
-                              bucket: "course-attachments",
-                              path: `${data.id}/images`,
-                              maxFiles: 1,
-                              maxFileSize: 5,
-                              acceptedFileTypes: ["image/*"],
-                            }}
-                            onUploadComplete={(file) => {
-                              
-                                "Uploaded File public url : ",
-                                file.publicUrl
-                              );
-                              form.setValue("imageUrl", file.publicUrl ?? "");
-                            }}
-                          />
+                          <FileUpload />
+                          // <FileUpload
+                          //   config={{
+                          //     bucket: "course-attachments",
+                          //     path: `${data.id}/images`,
+                          //     maxFiles: 1,
+                          //     maxFileSize: 5,
+                          //     acceptedFileTypes: ["image/*"],
+                          //   }}
+                          //   onUploadComplete={(file) => {
+
+                          //       "Uploaded File public url : ",
+                          //       file.publicUrl
+                          //     );
+                          //     form.setValue("imageUrl", file.publicUrl ?? "");
+                          //   }}
+                          // />
                         )}
                       </FormControl>
                       <FormMessage />

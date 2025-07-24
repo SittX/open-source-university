@@ -16,13 +16,11 @@ export async function GET(request: Request) {
             const forwardedHost = request.headers.get('x-forwarded-host') // original origin before load balancer
             const isLocalEnv = process.env.NODE_ENV === 'development'
 
-
-            // TODO: The RBAC redirection logic can be put inside here
             if (isLocalEnv) {
                 // we can be sure that there is no load balancer in between, so no need to watch for X-Forwarded-Host
-                return NextResponse.redirect(`${origin}${next}/student`)
+                return NextResponse.redirect(`${origin}${next}`)
             } else if (forwardedHost) {
-                return NextResponse.redirect(`http://${forwardedHost}${next}/student`)
+                return NextResponse.redirect(`http://${forwardedHost}${next}`)
             } else {
                 return NextResponse.redirect(`${origin}${next}`)
             }

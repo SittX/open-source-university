@@ -18,8 +18,9 @@ export const sidebarConfig: SidebarGroup[] = [
         label: "Application",
         routes: [
             { title: "Dashboard", url: "/", icon: Home, allowedRoles: ["student", "teacher", "admin"] },
-            { title: "Browse", url: "/search", icon: Search, allowedRoles: ["student", "teacher"] },
+            { title: "Explore", url: "/explore", icon: Search, allowedRoles: ["student", "teacher"] },
             { title: "My Courses", url: "/courses", icon: BookOpen, allowedRoles: ["student", "teacher"] },
+            { title: "Course Setup", url: "/course-setup", icon: BookOpen, allowedRoles: ["teacher"] },
             { title: "Assignments", url: "/assignments", icon: NotebookPen, allowedRoles: ["student", "teacher"] }
         ]
     },
