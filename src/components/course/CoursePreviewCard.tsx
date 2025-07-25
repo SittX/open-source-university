@@ -8,9 +8,22 @@ import { useRouter } from "next/navigation";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Star, Users, BookOpen, Clock, Play, CheckCircle } from "lucide-react";
+import {
+  Star,
+  Users,
+  BookOpen,
+  Clock,
+  Play,
+  CheckCircle,
+  Eye,
+  Heart,
+  Plus,
+  User,
+  Zap,
+} from "lucide-react";
+import { Card, CardHeader, CardTitle, CardContent } from "../ui/card";
 
-// Extended course type to include additional fields for the new design
+// Extended Course type to include additional fields for the new design
 type ExtendedCourse = Course & {
   instructor?: string;
   duration?: string;
@@ -24,6 +37,8 @@ type ExtendedCourse = Course & {
   lastWatched?: string;
   isCompleted?: boolean;
   category?: string;
+  tags?: string[];
+  favorites?: string[];
 };
 
 type CourseCardProps = {
@@ -31,7 +46,10 @@ type CourseCardProps = {
   variant?: "enrolled" | "available";
 };
 
-const CoursePreview = ({ course, variant = "available" }: CourseCardProps) => {
+const CoursePreviewCard = ({
+  course,
+  variant = "available",
+}: CourseCardProps) => {
   const router = useRouter();
 
   // Enhanced dummy data to match the new design requirements
@@ -47,6 +65,12 @@ const CoursePreview = ({ course, variant = "available" }: CourseCardProps) => {
     lastWatched: variant === "enrolled" ? "Lesson 16: API Routes" : undefined,
     isCompleted: false,
     category: "Web Development",
+    featured: "str",
+    bestseller: true,
+    new: false,
+    originalPrice: 2000,
+    tags: ["JavaScript"],
+    favorites: ["1232"],
     ...course,
   };
 
@@ -78,170 +102,128 @@ const CoursePreview = ({ course, variant = "available" }: CourseCardProps) => {
       tabIndex={0}
       aria-label={`View details for ${enhancedCourse.title}`}
     >
-      <div className="bg-white rounded-md border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-200 h-full flex flex-col">
-        {/* Course Image */}
-        <div className="relative">
-          <div className="aspect-video relative overflow-hidden">
-            <Image
-              src={
-                enhancedCourse.imageUrl ||
-                "/placeholder.svg?height=200&width=300"
-              }
-              alt={`${enhancedCourse.title} course image`}
-              fill
-              className="object-cover group-hover:scale-105 transition-transform duration-200"
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+      <Card
+        key={enhancedCourse.id}
+        className="group hover:shadow-lg transition-all duration-200 border-0 shadow-md h-full flex flex-col"
+      >
+        <div className="relative overflow-hidden rounded-t-lg">
+          <img
+            src={"/default-course-image.jpg"}
+            alt={enhancedCourse.title}
+            className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-200"
+          />
+          <div className="absolute top-3 left-3 flex gap-2">
+            {enhancedCourse.featured && (
+              <Badge className="bg-yellow-500 text-yellow-900 hover:bg-yellow-600">
+                <Zap className="h-3 w-3 mr-1" />
+                Featured
+              </Badge>
+            )}
+            {enhancedCourse.bestseller && (
+              <Badge className="bg-orange-500 text-white hover:bg-orange-600">
+                Bestseller
+              </Badge>
+            )}
+            {enhancedCourse.new && (
+              <Badge className="bg-green-500 text-white hover:bg-green-600">
+                New
+              </Badge>
+            )}
+          </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="absolute top-3 right-3 h-8 w-8 p-0 bg-white/90 hover:bg-white"
+          >
+            <Heart
+              className={`h-4 w-4 ${
+                enhancedCourse.favorites?.includes(enhancedCourse.id)
+                  ? "fill-red-500 text-red-500"
+                  : "text-gray-600"
+              }`}
             />
-            <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors" />
-
-            {/* Top badges */}
-            <div className="absolute top-3 left-3">
-              {variant === "available" && (
-                <Badge
-                  variant="secondary"
-                  className="bg-white/90 text-gray-700"
-                >
-                  {enhancedCourse.level}
-                </Badge>
-              )}
-            </div>
-
-            <div className="absolute top-3 right-3">
-              {variant === "enrolled" ? (
-                enhancedCourse.isCompleted ? (
-                  <Badge className="bg-green-500 hover:bg-green-500 text-white">
-                    <CheckCircle className="w-3 h-3 mr-1" />
-                    Completed
-                  </Badge>
-                ) : (
-                  <Badge className="bg-blue-500 hover:bg-blue-500 text-white">
-                    In Progress
-                  </Badge>
-                )
-              ) : enhancedCourse.price === 0 ? (
-                <Badge className="bg-green-500 hover:bg-green-500 text-white">
-                  Free
-                </Badge>
-              ) : (
-                <Badge
-                  variant="outline"
-                  className="bg-white/90 text-gray-700 border-white/90"
-                >
-                  ${enhancedCourse.price}
-                </Badge>
-              )}
-            </div>
-
-            {/* Continue button for enrolled courses */}
-            {variant === "enrolled" && !enhancedCourse.isCompleted && (
-              <Button
-                size="sm"
-                onClick={handleButtonClick}
-                className="absolute bottom-3 right-3 bg-white/90 hover:bg-white text-gray-900 opacity-0 group-hover:opacity-100 transition-opacity"
-              >
-                <Play className="w-4 h-4 mr-1" />
-                Continue
-              </Button>
-            )}
-          </div>
+          </Button>
         </div>
 
-        {/* Course Content */}
-        <div className="p-5 flex-1 flex flex-col">
-          {/* Title and Instructor */}
-          <div className="mb-3">
-            <h3 className="font-semibold text-gray-900 mb-1 line-clamp-2 leading-tight">
+        <CardHeader className="pb-3 flex-shrink-0">
+          <div className="flex items-start justify-between gap-2">
+            <CardTitle className="text-lg leading-tight line-clamp-2 group-hover:text-primary transition-colors">
               {enhancedCourse.title}
-            </h3>
-            <p className="text-sm text-gray-600">
-              by {enhancedCourse.instructor}
-            </p>
-          </div>
-
-          {/* Description for available courses */}
-          {variant === "available" && (
-            <p className="text-sm text-gray-600 mb-4 line-clamp-2 flex-1">
-              {enhancedCourse.description ||
-                "Learn the fundamentals and advanced concepts in this comprehensive course."}
-            </p>
-          )}
-
-          {/* Progress section for enrolled courses */}
-          {variant === "enrolled" &&
-            enhancedCourse.progress !== undefined &&
-            !enhancedCourse.isCompleted && (
-              <div className="mb-4">
-                <div className="flex justify-between text-sm text-gray-600 mb-2">
-                  <span>Progress</span>
-                  <span>{enhancedCourse.progress}%</span>
+            </CardTitle>
+            <div className="text-right flex-shrink-0">
+              <div className="text-xl font-bold">${enhancedCourse.price}</div>
+              {enhancedCourse.originalPrice > 0 && (
+                <div className="text-sm text-muted-foreground line-through">
+                  ${enhancedCourse.originalPrice}
                 </div>
-                <Progress value={enhancedCourse.progress} className="h-2" />
-                {enhancedCourse.lastWatched && (
-                  <p className="text-xs text-gray-500 mt-2">
-                    Last: {enhancedCourse.lastWatched}
-                  </p>
-                )}
-              </div>
-            )}
+              )}
+            </div>
+          </div>
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <User className="h-4 w-4" />
+            <span>{enhancedCourse.instructor}</span>
+          </div>
+        </CardHeader>
 
-          {/* Course Stats */}
-          <div className="flex items-center justify-between text-sm text-gray-500 mb-4">
-            {variant === "available" ? (
-              <>
+        <CardContent className="flex flex-col flex-1 p-4">
+          <div className="flex-grow space-y-4">
+            <p className="text-sm text-muted-foreground line-clamp-2 flex-shrink-0">
+              {enhancedCourse.description}
+            </p>
+
+            {/* course Info */}
+            <div className="flex items-center justify-between text-sm text-muted-foreground flex-shrink-0">
+              <div className="flex items-center gap-4">
                 <div className="flex items-center gap-1">
-                  <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                  <span className="font-medium">{enhancedCourse.rating}</span>
+                  <Clock className="h-4 w-4" />
+                  <span>{enhancedCourse.duration}</span>
                 </div>
-                <div className="flex items-center gap-4">
-                  <span className="flex items-center gap-1">
-                    <Users className="w-4 h-4" />
-                    {enhancedCourse.students?.toLocaleString()}
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <Clock className="w-4 h-4" />
-                    {enhancedCourse.duration}
-                  </span>
+                <div className="flex items-center gap-1">
+                  <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                  <span>{enhancedCourse.rating}</span>
                 </div>
-              </>
-            ) : (
-              <div className="flex items-center gap-4 w-full">
-                <span className="flex items-center gap-1">
-                  <Clock className="w-4 h-4" />
-                  {enhancedCourse.duration}
-                </span>
-                <span className="flex items-center gap-1">
-                  <BookOpen className="w-4 h-4" />
-                  {enhancedCourse.lessons} lessons
-                </span>
               </div>
-            )}
+              <Badge variant="outline" className="text-xs">
+                {enhancedCourse.level}
+              </Badge>
+            </div>
+
+            <div className="flex items-center gap-2 text-sm text-muted-foreground flex-shrink-0">
+              <Users className="h-4 w-4" />
+              <span>{enhancedCourse.students.toLocaleString()} students</span>
+            </div>
+            {/* Tags */}
+            <div className="flex flex-wrap gap-1 flex-shrink-0">
+              {(enhancedCourse.tags ?? []).slice(0, 3).map((tag) => (
+                <Badge key={tag} variant="outline" className="text-xs">
+                  {tag}
+                </Badge>
+              ))}
+            </div>
           </div>
 
-          {/* Action Button */}
-          {variant === "available" && (
+          {/* Action Buttons */}
+          <div className="flex flex-col sm:flex-row gap-2 pt-4 mt-auto">
             <Button
-              onClick={handleButtonClick}
-              className="w-full bg-gray-900 hover:bg-gray-800 text-white mt-auto"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground min-h-[40px]"
+              size="sm"
             >
-              {enhancedCourse.price === 0
-                ? "Enroll Free"
-                : `Enroll for $${enhancedCourse.price}`}
+              <Plus className="h-4 w-4 mr-2" />
+              Enroll Now
             </Button>
-          )}
-
-          {variant === "enrolled" && enhancedCourse.isCompleted && (
             <Button
-              onClick={handleButtonClick}
               variant="outline"
-              className="w-full mt-auto bg-transparent"
+              className="sm:min-w-[100px] min-h-[40px] bg-transparent"
+              size="sm"
             >
-              Review Course
+              <Eye className="h-4 w-4 mr-2" />
+              Preview
             </Button>
-          )}
-        </div>
-      </div>
+          </div>
+        </CardContent>
+      </Card>
     </motion.div>
   );
 };
 
-export default CoursePreview;
+export default CoursePreviewCard;
