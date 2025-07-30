@@ -31,6 +31,7 @@ const AppSidebarItem = ({ url, title, icon: Icon }: AppSidebarItemProps) => {
         "data-[active=true]:bg-primary/8 data-[active=true]:text-primary data-[active=true]:font-semibold",
         "data-[active=true]:shadow-sm data-[active=true]:border data-[active=true]:border-primary/10"
       )}
+      tooltip={title}
     >
       <Link href={url}>
         <Icon className="mr-2" />

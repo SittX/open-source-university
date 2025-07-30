@@ -23,7 +23,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { formatFileSize } from "@/utils/file-utils";
-import { Attachment } from "@prisma/client";
+import { CourseAttachment } from "@prisma/client";
 import { Label } from "@radix-ui/react-dropdown-menu";
 import {
   Calendar,
@@ -41,7 +41,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 
 type CourseAttachmentProps = {
-  attachment: Attachment;
+  attachment: CourseAttachment;
 };
 
 const CourseAttachmentCard = ({ attachment }: CourseAttachmentProps) => {

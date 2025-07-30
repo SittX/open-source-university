@@ -19,6 +19,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useEffect, useState } from "react";
 import { User } from "@supabase/supabase-js";
 import LogoutButton from "./LogoutButton";
+import { Button } from "./ui/button";
 
 const AvatarButton = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -53,7 +54,7 @@ const AvatarButton = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Avatar>
+        <Avatar role="button">
           <AvatarImage src={user?.user_metadata?.avatar_url} alt="avatar" />
           <AvatarFallback>
             {user?.user_metadata?.name?.[0] || "U"}

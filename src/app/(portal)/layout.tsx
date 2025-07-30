@@ -11,7 +11,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
     <SidebarProvider>
       <AppSidebar />
       <main className="w-full h-[100vh] flex flex-col">
-        <div className="h-[50px] flex justify-between items-center border-b p-4 shadow-sm">
+        <div className="sticky top-0 z-40 flex h-16 shrink-0 justify-between items-center gap-2 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4">
           <Navbar />
           <div className="flex justify-between gap-5 items-center">
             <ThemeToggle />
